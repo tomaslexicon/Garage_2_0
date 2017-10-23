@@ -53,6 +53,21 @@ namespace Garage_2_0.Controllers
             {
                 return HttpNotFound();
             }
+
+            var model = new DetailModel();
+
+            model.Id = parkedVehicle.Id;
+            model.Type = parkedVehicle.Type;
+            model.RegNo = parkedVehicle.RegNo;
+            model.Color = parkedVehicle.Color;
+            model.Brand = parkedVehicle.Brand;
+            model.Model = parkedVehicle.Model;
+            model.NumberOfWheels = parkedVehicle.NumberOfWheels;
+            model.StartTime = parkedVehicle.StartTime;
+            model.ParkingTime = model.StartTime;// Fixa parkingTime
+
+
+
             return View(parkedVehicle);
         }
 
