@@ -17,12 +17,14 @@ namespace Garage_2_0.Controllers
         private GarageContext db = new GarageContext();
 
         // GET: ParkedVehicles
-        public ActionResult Index(string sortBy = "RegNo", bool isDescending = true)
+        public ActionResult Index(string sortBy = "RegNo", string isDescending = "True")
         {
+            bool desc = isDescending.ToLower() == "true";
+
             var model = new OverviewModel();
-            model.IsDescending = isDescending;
+            model.IsDescending = desc;
             model.SortBy = sortBy;
-            model.Vehicles = GetOverviewVehicleList(sortBy, isDescending);
+            model.Vehicles = GetOverviewVehicleList(sortBy, desc);
 
             return View(model);
         }
@@ -31,14 +33,26 @@ namespace Garage_2_0.Controllers
         { 
             var vehicles = db.ParkedVehicles.ToList();
 
-            return vehicles.Select(p => new OverviewVehicle
+            var v = vehicles.Select(p => new OverviewVehicle
             {
                 Id = p.Id,
                 RegNo = p.RegNo,
                 Color = p.Color,
                 StartTime = p.StartTime,
                 Type = p.Type
-            }).ToList();
+            });
+
+            switch (sortBy.ToLower())
+            {
+                case "type":
+                    return isDescending ? v.OrderByDescending(i => i.Type).ToList() : v.OrderBy(i => i.Type).ToList();
+                case "starttime":
+                    return isDescending ? v.OrderByDescending(i => i.StartTime).ToList() : v.OrderBy(i => i.StartTime).ToList();
+                case "color":
+                    return isDescending ? v.OrderByDescending(i => i.Color).ToList() : v.OrderBy(i => i.Color).ToList();
+                default:
+                    return isDescending ? v.OrderByDescending(i => i.RegNo).ToList() : v.OrderBy(i => i.RegNo).ToList();
+            }
         }
 
         // GET: ParkedVehicles/Details/5

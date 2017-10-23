@@ -13,10 +13,10 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Vehicles.First().Type)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().Type).ToString(), "Index", new { sortBy = "Type", isDescending = !(Model.IsDescending) })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Vehicles.First().RegNo)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().RegNo).ToString(), "Index", new { sortBy = "RegNo", isDescending = !(Model.IsDescending) })
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Vehicles.First().Color)
