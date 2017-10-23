@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Garage_2_0.DataAccessLayer;
 using Garage_2_0.Models;
+using Garage_2_0.ViewModels;
 
 namespace Garage_2_0.Controllers
 {
@@ -16,9 +17,28 @@ namespace Garage_2_0.Controllers
         private GarageContext db = new GarageContext();
 
         // GET: ParkedVehicles
-        public ActionResult Index()
+        public ActionResult Index(string sortBy = "RegNo", bool isDescending = true)
         {
-            return View(db.ParkedVehicles.ToList());
+            var model = new OverviewModel();
+            model.IsDescending = isDescending;
+            model.SortBy = sortBy;
+            model.Vehicles = GetOverviewVehicleList(sortBy, isDescending);
+
+            return View(model);
+        }
+
+        private List<OverviewVehicle> GetOverviewVehicleList(string sortBy, bool isDescending)
+        { 
+            var vehicles = db.ParkedVehicles.ToList();
+
+            return vehicles.Select(p => new OverviewVehicle
+            {
+                Id = p.Id,
+                RegNo = p.RegNo,
+                Color = p.Color,
+                StartTime = p.StartTime,
+                Type = p.Type
+            }).ToList();
         }
 
         // GET: ParkedVehicles/Details/5
