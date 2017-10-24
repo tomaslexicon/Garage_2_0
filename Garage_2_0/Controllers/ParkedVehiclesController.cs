@@ -65,9 +65,9 @@ namespace Garage_2_0.Controllers
             model.NumberOfWheels = parkedVehicle.NumberOfWheels;
             model.StartTime = parkedVehicle.StartTime.ToString("g");
 
-            //model.ParkingTime =  DateTime.Now.Subtract(model.StartTime).Hours.ToString() + ": " + DateTime.Now.Subtract(model.StartTime).Minutes.ToString();
-            model.ParkingTime = DateTime.Now.Subtract(parkedVehicle.StartTime).ToString(@"hh\:mm");
+            // model.ParkingTime = DateTime.Now.Subtract(parkedVehicle.StartTime).ToString(@"hh\:mm");
 
+            model.ParkingTime = DateTime.Now.Subtract(parkedVehicle.StartTime).Hours + " h, " + DateTime.Now.Subtract(parkedVehicle.StartTime).Minutes + " min";
 
 
             return View(model);
