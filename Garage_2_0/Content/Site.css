@@ -1,5 +1,5 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 120px;
     padding-bottom: 20px;
 }
 
@@ -7,6 +7,39 @@
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+}
+
+.navbar {
+      margin-bottom: 0;
+      background-color:darkcyan; 
+      z-index: 9999;
+      border: 0;
+      font-size: 16px !important;
+      line-height: 1.42857143 !important;
+      letter-spacing: 4px;
+      border-radius: 0;
+      font-family: Montserrat, sans-serif;
+      padding: 20px 15px;
+  }
+
+
+
+
+  .navbar li a, .navbar .navbar-brand {
+      color: #fff !important;
+  }
+  .navbar-nav li a:hover, .navbar-nav li.active a {
+      color: #f4511e !important;
+      background-color: darkcyan !important;
+  }
+  .navbar-default .navbar-toggle {
+      border-color: transparent;
+      color: #fff !important;
+  }
+
+.jumbotron {
+    background-image: url('../Images/jumbotronImages2.jpg');
+    color: white;
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
@@ -21,4 +54,26 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+.btn{
+
+   
+    
+}
+.btn-lg{
+
+    background-color: darkcyan;
+    border-color:white;
+    margin-right: 20px;
+}
+
+
+footer{
+    
+    /*font-family: Montserrat, sans-serif;*/
+    text-align: center;
+    background-color: darkcyan;
+    color:#fff;
+    padding: 30px;
 }
