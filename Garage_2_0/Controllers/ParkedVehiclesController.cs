@@ -30,7 +30,7 @@ namespace Garage_2_0.Controllers
         }
 
         private List<OverviewVehicle> GetOverviewVehicleList(string sortBy, bool isDescending)
-        { 
+        {
             var vehicles = db.ParkedVehicles.ToList();
 
             var v = vehicles.Select(p => new OverviewVehicle
@@ -81,17 +81,37 @@ namespace Garage_2_0.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CheckIn([Bind(Include = "Id,Type,RegNo,Color,Brand,Model,NumberOfWheels,StartTime")] ParkedVehicle parkedVehicle)
+        public ActionResult CheckIn([Bind(Include = "Id,Type,RegNo,Color,Brand,Model,NumberOfWheels")] CheckInModel checkInVehicle)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                db.ParkedVehicles.Add(parkedVehicle);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return View(checkInVehicle);
             }
 
-            return View(parkedVehicle);
+            var v = db.ParkedVehicles.Where(p => p.RegNo == checkInVehicle.RegNo).ToList();
+            if (v.Count != 0)
+            {
+                return View(checkInVehicle);
+            }
+
+            var parkedVehicle = new ParkedVehicle()
+            {
+                Id = checkInVehicle.Id,
+                RegNo = checkInVehicle.RegNo,
+                Type = checkInVehicle.Type,
+                Color = checkInVehicle.Color,
+                Brand = checkInVehicle.Brand,
+                Model = checkInVehicle.Model,
+                NumberOfWheels = checkInVehicle.NumberOfWheels,
+                StartTime = DateTime.Now
+            };
+
+            db.ParkedVehicles.Add(parkedVehicle);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
+
+
 
         //// GET: ParkedVehicles/Edit/5
         //public ActionResult Edit(int? id)
