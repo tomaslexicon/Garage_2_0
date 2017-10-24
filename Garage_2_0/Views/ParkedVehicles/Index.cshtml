@@ -1,28 +1,27 @@
-﻿@*@model IEnumerable<Garage_2_0.Models.ParkedVehicle>*@
-@model Garage_2_0.ViewModels.OverviewModel
+﻿@model Garage_2_0.ViewModels.OverviewModel
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Overview</h2>
 
 <p>
-    @Html.ActionLink("CheckIn", "CheckIn")
+    @Html.ActionLink("Check In Vehicle", "CheckIn")
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().Type).ToString(), "Index", new { sortBy = "Type", isDescending = !(Model.IsDescending) })
-        </th>
-        <th>
             @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().RegNo).ToString(), "Index", new { sortBy = "RegNo", isDescending = !(Model.IsDescending) })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Vehicles.First().Color)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().Type).ToString(), "Index", new { sortBy = "Type", isDescending = !(Model.IsDescending) })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Vehicles.First().StartTime)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().Color).ToString(), "Index", new { sortBy = "Color", isDescending = !(Model.IsDescending) })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().StartTime).ToString(), "Index", new { sortBy = "StartTime", isDescending = !(Model.IsDescending) })
         </th>
         <th></th>
     </tr>
@@ -30,10 +29,10 @@
 @foreach (var item in Model.Vehicles) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Type)
+            @Html.DisplayFor(modelItem => item.RegNo)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.RegNo)
+            @Html.DisplayFor(modelItem => item.Type)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Color)
@@ -42,7 +41,6 @@
             @Html.DisplayFor(modelItem => item.StartTime)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
             @Html.ActionLink("Details", "Details", new { id=item.Id }) |
             @Html.ActionLink("CheckOut", "CheckOut", new { id=item.Id })
         </td>
