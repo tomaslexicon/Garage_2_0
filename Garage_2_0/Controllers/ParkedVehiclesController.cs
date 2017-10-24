@@ -17,23 +17,24 @@ namespace Garage_2_0.Controllers
         private GarageContext db = new GarageContext();
 
         // GET: ParkedVehicles
-        public ActionResult Index(string sortBy = "RegNo", string isDescending = "True")
+        public ActionResult Index(string sortBy = "RegNo", string isDescending = "True", string search = "")
         {
             bool desc = isDescending.ToLower() == "true";
+            string searchString = search; // TODO: fix whitespaces
 
             var model = new OverviewModel();
             model.IsDescending = desc;
             model.SortBy = sortBy;
-            model.Vehicles = GetOverviewVehicleList(sortBy, desc);
+            model.Search = searchString;
+            model.Vehicles = GetOverviewVehicleList(sortBy, desc, search);
 
             return View(model);
         }
 
-        private List<OverviewVehicle> GetOverviewVehicleList(string sortBy, bool isDescending)
+        private List<OverviewVehicle> GetOverviewVehicleList(string sortBy, bool isDescending, string search)
         {
             var vehicles = db.ParkedVehicles.ToList();
-
-            var v = vehicles.Select(p => new OverviewVehicle
+            var v = vehicles.Where(p => p.RegNo.ToLower().Contains(search.ToLower())).Select(p => new OverviewVehicle
             {
                 Id = p.Id,
                 RegNo = p.RegNo,
@@ -70,13 +71,13 @@ namespace Garage_2_0.Controllers
             return View(parkedVehicle);
         }
 
-        // GET: ParkedVehicles/Create
+        // GET: ParkedVehicles/CheckIn
         public ActionResult CheckIn()
         {
             return View();
         }
 
-        // POST: ParkedVehicles/Create
+        // POST: ParkedVehicles/CheckIn
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]

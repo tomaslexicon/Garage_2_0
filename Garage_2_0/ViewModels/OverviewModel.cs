@@ -20,5 +20,6 @@ namespace Garage_2_0.ViewModels
         public List<OverviewVehicle> Vehicles { get; set; }
         public bool IsDescending { get; set; }
         public string SortBy { get; set; }
+        public string Search { get; set; }
     }
 }
