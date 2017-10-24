@@ -63,12 +63,14 @@ namespace Garage_2_0.Controllers
             model.Brand = parkedVehicle.Brand;
             model.Model = parkedVehicle.Model;
             model.NumberOfWheels = parkedVehicle.NumberOfWheels;
-            model.StartTime = parkedVehicle.StartTime;
-            model.ParkingTime = model.StartTime;// Fixa parkingTime
+            model.StartTime = parkedVehicle.StartTime.ToString("g");
+
+            //model.ParkingTime =  DateTime.Now.Subtract(model.StartTime).Hours.ToString() + ": " + DateTime.Now.Subtract(model.StartTime).Minutes.ToString();
+            model.ParkingTime = DateTime.Now.Subtract(parkedVehicle.StartTime).ToString(@"hh\:mm");
 
 
 
-            return View(parkedVehicle);
+            return View(model);
         }
 
         // GET: ParkedVehicles/Create

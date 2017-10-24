@@ -1,4 +1,5 @@
-﻿@model Garage_2_0.Models.ParkedVehicle
+﻿@*@model Garage_2_0.Models.ParkedVehicle*@
+@model Garage_2_0.ViewModels.DetailModel
 
 @{
     ViewBag.Title = "Details";
@@ -66,9 +67,17 @@
             @Html.DisplayFor(model => model.StartTime)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.ParkingTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ParkingTime)
+        </dd>
+
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
     @Html.ActionLink("Back to List", "Index")
 </p>
