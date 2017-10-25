@@ -128,7 +128,7 @@ namespace Garage_2_0.Controllers
             db.ParkedVehicles.Add(parkedVehicle);
             db.SaveChanges();
 
-            TempData["Feedback"] = "Your " +checkInVehicle.Type + " with registration number " +checkInVehicle.RegNo +  " has been checked in";
+            TempData["Feedback"] = "Your " + checkInVehicle.Type + " with registration number " + checkInVehicle.RegNo + " has been checked in";
             return RedirectToAction("Index");
         }
 
@@ -155,7 +155,8 @@ namespace Garage_2_0.Controllers
                 Model = parkedVehicle.Model,
                 Type = parkedVehicle.Type,
                 NumberOfWheels = parkedVehicle.NumberOfWheels,
-                StartTime = parkedVehicle.StartTime
+                StartTime = parkedVehicle.StartTime,
+                OriginalRegNo = parkedVehicle.RegNo
             };
 
             return View(model);
@@ -168,28 +169,36 @@ namespace Garage_2_0.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Type,RegNo,Color,Brand,Model,NumberOfWheels")] EditModel parkedVehicle)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var startTime = db.ParkedVehicles.AsNoTracking().FirstOrDefault(p => p.Id == parkedVehicle.Id).StartTime;
-                
-                var v = new ParkedVehicle()
-                {
-                    Id = parkedVehicle.Id,
-                    RegNo = parkedVehicle.RegNo,
-                    Color = parkedVehicle.Color,
-                    Brand = parkedVehicle.Brand,
-                    Model = parkedVehicle.Model,
-                    Type = parkedVehicle.Type,
-                    NumberOfWheels = parkedVehicle.NumberOfWheels,
-                    StartTime = startTime
-                };
-
-                db.Entry(v).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return View(parkedVehicle);
             }
 
-            return View(parkedVehicle);
+            var vh = db.ParkedVehicles.Where(p => p.RegNo == parkedVehicle.RegNo && p.Id != parkedVehicle.Id).ToList();
+            if (vh.Count != 0)
+            {
+                parkedVehicle.StartTime = db.ParkedVehicles.AsNoTracking().FirstOrDefault(p => p.Id == parkedVehicle.Id).StartTime;
+                return View(parkedVehicle);
+            }
+
+            var startTime = db.ParkedVehicles.AsNoTracking().FirstOrDefault(p => p.Id == parkedVehicle.Id).StartTime;
+
+            var v = new ParkedVehicle()
+            {
+                Id = parkedVehicle.Id,
+                RegNo = parkedVehicle.RegNo,
+                Color = parkedVehicle.Color,
+                Brand = parkedVehicle.Brand,
+                Model = parkedVehicle.Model,
+                Type = parkedVehicle.Type,
+                NumberOfWheels = parkedVehicle.NumberOfWheels,
+                StartTime = startTime
+            };
+
+            db.Entry(v).State = EntityState.Modified;
+            db.SaveChanges();
+            TempData["Feedback"] = "Your " + v.Type + " with registration number " + v.RegNo + " has been successfully changed";
+            return RedirectToAction("Index");
         }
 
         //// GET: ParkedVehicles/Delete/5
@@ -254,7 +263,7 @@ namespace Garage_2_0.Controllers
                 if (timeList[1] == "01") timeSpan += "1 hour";
                 else
                 {
-                    if ((timeList[1])[0] == '0')    timeSpan += ((timeList[1])[1] + " hours");
+                    if ((timeList[1])[0] == '0') timeSpan += ((timeList[1])[1] + " hours");
                     else timeSpan += ((timeList[1]) + " hours");
                 }
             }
