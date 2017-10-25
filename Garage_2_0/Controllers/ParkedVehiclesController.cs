@@ -10,6 +10,7 @@ using Garage_2_0.DataAccessLayer;
 using Garage_2_0.Models;
 using Garage_2_0.ViewModels;
 
+
 namespace Garage_2_0.Controllers
 {
     public class ParkedVehiclesController : Controller
@@ -78,12 +79,8 @@ namespace Garage_2_0.Controllers
             model.Brand = parkedVehicle.Brand;
             model.Model = parkedVehicle.Model;
             model.NumberOfWheels = parkedVehicle.NumberOfWheels;
-            model.StartTime = parkedVehicle.StartTime.ToString("g");
-
-            // model.ParkingTime = DateTime.Now.Subtract(parkedVehicle.StartTime).ToString(@"hh\:mm");
-
-            model.ParkingTime = DateTime.Now.Subtract(parkedVehicle.StartTime).Hours + " h, " + DateTime.Now.Subtract(parkedVehicle.StartTime).Minutes + " min";
-
+            model.StartTime = parkedVehicle.StartTime.ToString("g");                        
+            model.ParkingTime = formatTimeSpan(DateTime.Now.Subtract(parkedVehicle.StartTime).ToString(@"dd\:hh\:mm"));
 
             return View(model);
         }
@@ -126,6 +123,8 @@ namespace Garage_2_0.Controllers
 
             db.ParkedVehicles.Add(parkedVehicle);
             db.SaveChanges();
+
+            TempData["Feedback"] = "Your " + checkInVehicle.Type + " with registration number " + checkInVehicle.RegNo + " has been checked in";
             return RedirectToAction("Index");
         }
 
@@ -136,12 +135,27 @@ namespace Garage_2_0.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             ParkedVehicle parkedVehicle = db.ParkedVehicles.Find(id);
             if (parkedVehicle == null)
             {
                 return HttpNotFound();
             }
-            return View(parkedVehicle);
+
+            var model = new EditModel()
+            {
+                Id = parkedVehicle.Id,
+                RegNo = parkedVehicle.RegNo,
+                Color = parkedVehicle.Color,
+                Brand = parkedVehicle.Brand,
+                Model = parkedVehicle.Model,
+                Type = parkedVehicle.Type,
+                NumberOfWheels = parkedVehicle.NumberOfWheels,
+                StartTime = parkedVehicle.StartTime,
+                OriginalRegNo = parkedVehicle.RegNo
+            };
+
+            return View(model);
         }
 
         // POST: ParkedVehicles/Edit/5
@@ -149,15 +163,38 @@ namespace Garage_2_0.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Type,RegNo,Color,Brand,Model,NumberOfWheels,StartTime")] ParkedVehicle parkedVehicle)
+        public ActionResult Edit([Bind(Include = "Id,Type,RegNo,Color,Brand,Model,NumberOfWheels")] EditModel parkedVehicle)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                db.Entry(parkedVehicle).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return View(parkedVehicle);
             }
-            return View(parkedVehicle);
+
+            var vh = db.ParkedVehicles.Where(p => p.RegNo == parkedVehicle.RegNo && p.Id != parkedVehicle.Id).ToList();
+            if (vh.Count != 0)
+            {
+                parkedVehicle.StartTime = db.ParkedVehicles.AsNoTracking().FirstOrDefault(p => p.Id == parkedVehicle.Id).StartTime;
+                return View(parkedVehicle);
+            }
+
+            var startTime = db.ParkedVehicles.AsNoTracking().FirstOrDefault(p => p.Id == parkedVehicle.Id).StartTime;
+
+            var v = new ParkedVehicle()
+            {
+                Id = parkedVehicle.Id,
+                RegNo = parkedVehicle.RegNo,
+                Color = parkedVehicle.Color,
+                Brand = parkedVehicle.Brand,
+                Model = parkedVehicle.Model,
+                Type = parkedVehicle.Type,
+                NumberOfWheels = parkedVehicle.NumberOfWheels,
+                StartTime = startTime
+            };
+
+            db.Entry(v).State = EntityState.Modified;
+            db.SaveChanges();
+            TempData["Feedback"] = "Your " + v.Type + " with registration number " + v.RegNo + " has been successfully changed";
+            return RedirectToAction("Index");
         }
 
         //// GET: ParkedVehicles/Delete/5
