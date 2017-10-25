@@ -126,6 +126,8 @@ namespace Garage_2_0.Controllers
 
             db.ParkedVehicles.Add(parkedVehicle);
             db.SaveChanges();
+
+            TempData["Feedback"] = "Your " +checkInVehicle.Type + " with registration number " +checkInVehicle.RegNo +  " has been checked in";
             return RedirectToAction("Index");
         }
 

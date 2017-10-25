@@ -6,6 +6,13 @@
 
 <h2>Overview</h2>
 
+
+@if (TempData["Feedback"] != null) {
+<div class="alert alert-success alert-dismissable fade in">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    @TempData["Feedback"]
+</div>
+}
 <p>
     @Html.ActionLink("Check In Vehicle", "CheckIn")
 </p>
