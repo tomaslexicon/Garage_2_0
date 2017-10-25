@@ -19,6 +19,8 @@ namespace Garage_2_0.ViewModels
         [StringLength(1024, ErrorMessage = "{0} needs to be at least {2} characters long", MinimumLength = 1)]
         public string RegNo { get; set; }
 
+        public string OriginalRegNo { get; set; }
+
         [Required]
         [Display(Name = "Color")]
         [StringLength(1024, ErrorMessage = "{0} needs to be at least {2} characters long", MinimumLength = 1)]
