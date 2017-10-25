@@ -16,7 +16,10 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Garage 2.0", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <a href="@Url.Action("Index", "Home")">
+                    <img src="~/Images/GarageLogoSizeXS.png" alt="Garage 2.0" />
+                </a>
+                @*@Html.ActionLink("Garage 2.0", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">

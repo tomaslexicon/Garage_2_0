@@ -4,8 +4,8 @@
 
 <div class="jumbotron">
     <h1>Garage 2.0</h1>
-    <p class="lead">Garage is a free web framework for parking your vehicle using MVC. HTML, CSS and JavaScript</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Check In &raquo;</a></p>
+    <p class="lead">Garage is a web framework for parking your vehicle using MVC. HTML, CSS and JavaScript</p>
+    @Html.ActionLink("Check In Vehicle", "CheckIn", "ParkedVehicles", new { area = "" }, new { @class = "btn btn-primary btn-lg" })
 </div>
 
 <div class="row">
