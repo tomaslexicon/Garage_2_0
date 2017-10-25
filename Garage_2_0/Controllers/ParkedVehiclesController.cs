@@ -10,6 +10,7 @@ using Garage_2_0.DataAccessLayer;
 using Garage_2_0.Models;
 using Garage_2_0.ViewModels;
 
+
 namespace Garage_2_0.Controllers
 {
     public class ParkedVehiclesController : Controller
@@ -136,12 +137,26 @@ namespace Garage_2_0.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             ParkedVehicle parkedVehicle = db.ParkedVehicles.Find(id);
             if (parkedVehicle == null)
             {
                 return HttpNotFound();
             }
-            return View(parkedVehicle);
+
+            var model = new EditModel()
+            {
+                Id = parkedVehicle.Id,
+                RegNo = parkedVehicle.RegNo,
+                Color = parkedVehicle.Color,
+                Brand = parkedVehicle.Brand,
+                Model = parkedVehicle.Model,
+                Type = parkedVehicle.Type,
+                NumberOfWheels = parkedVehicle.NumberOfWheels,
+                StartTime = parkedVehicle.StartTime
+            };
+
+            return View(model);
         }
 
         // POST: ParkedVehicles/Edit/5
@@ -149,14 +164,29 @@ namespace Garage_2_0.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Type,RegNo,Color,Brand,Model,NumberOfWheels,StartTime")] ParkedVehicle parkedVehicle)
+        public ActionResult Edit([Bind(Include = "Id,Type,RegNo,Color,Brand,Model,NumberOfWheels")] EditModel parkedVehicle)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(parkedVehicle).State = EntityState.Modified;
+                var startTime = db.ParkedVehicles.AsNoTracking().FirstOrDefault(p => p.Id == parkedVehicle.Id).StartTime;
+                
+                var v = new ParkedVehicle()
+                {
+                    Id = parkedVehicle.Id,
+                    RegNo = parkedVehicle.RegNo,
+                    Color = parkedVehicle.Color,
+                    Brand = parkedVehicle.Brand,
+                    Model = parkedVehicle.Model,
+                    Type = parkedVehicle.Type,
+                    NumberOfWheels = parkedVehicle.NumberOfWheels,
+                    StartTime = startTime
+                };
+
+                db.Entry(v).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             return View(parkedVehicle);
         }
 
