@@ -1,28 +1,54 @@
-﻿@*@model IEnumerable<Garage_2_0.Models.ParkedVehicle>*@
-@model Garage_2_0.ViewModels.OverviewModel
+﻿@model Garage_2_0.ViewModels.OverviewModel
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Overview</h2>
 
 <p>
-    @Html.ActionLink("CheckIn", "CheckIn")
+    @Html.ActionLink("Check In Vehicle", "CheckIn")
 </p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Search, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                    @Html.EditorFor(model => model.Search, new { htmlAttributes = new { @class = "form-control" } })
+                    <input type="submit" value="Search" class="btn btn-default" />
+            </div> 
+        </div>
+
+        @Html.HiddenFor(model => model.IsDescending)
+        @Html.HiddenFor(model => model.SortBy)
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @Html.ActionLink("View All", "Index", new { sortBy = Model.SortBy, isDescending = Model.IsDescending, search = "" }, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    </div>
+}
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Vehicles.First().Type)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().RegNo).ToString(), "Index", new { sortBy = "RegNo", isDescending = !(Model.IsDescending), search = Model.Search })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Vehicles.First().RegNo)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().Type).ToString(), "Index", new { sortBy = "Type", isDescending = !(Model.IsDescending), search = Model.Search })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Vehicles.First().Color)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().Color).ToString(), "Index", new { sortBy = "Color", isDescending = !(Model.IsDescending), search = Model.Search })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Vehicles.First().StartTime)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().StartTime).ToString(), "Index", new { sortBy = "StartTime", isDescending = !(Model.IsDescending), search = Model.Search })
         </th>
         <th></th>
     </tr>
@@ -30,10 +56,10 @@
 @foreach (var item in Model.Vehicles) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Type)
+            @Html.DisplayFor(modelItem => item.RegNo)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.RegNo)
+            @Html.DisplayFor(modelItem => item.Type)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Color)
@@ -42,7 +68,7 @@
             @Html.DisplayFor(modelItem => item.StartTime)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
             @Html.ActionLink("Details", "Details", new { id=item.Id }) |
             @Html.ActionLink("CheckOut", "CheckOut", new { id=item.Id })
         </td>
@@ -50,3 +76,4 @@
 }
 
 </table>
+    
