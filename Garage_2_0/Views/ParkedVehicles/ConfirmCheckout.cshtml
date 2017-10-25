@@ -1,0 +1,54 @@
+﻿@model Garage_2_0.ViewModels.ReceiptModel
+
+<h3><b>Thanks for using Garage 2.0, welcome back!</b></h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.RegNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StopTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StopTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ParkingTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ParkingTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ParkingCost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ParkingCost)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+        <div class="form-actions no-color">
+            <input type="submit" value="OK" class="btn btn-default" />
+        </div>
+    }
+</div>

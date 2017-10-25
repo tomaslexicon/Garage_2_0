@@ -16,13 +16,13 @@ namespace Garage_2_0.ViewModels
         [Display(Name = "Start Time")]
         public string StartTime { get; set; }
 
-        [Display(Name = "Stop Time")]
-        public string StopTime { get; set; }
+        //[Display(Name = "Stop Time")]
+        //public string StopTime { get; set; }
 
-        [Display(Name = "Parking Time")]
-        public string ParkingTime { get; set; }
+        //[Display(Name = "Parking Time")]
+        //public string ParkingTime { get; set; }
 
-        [Display(Name = "Cost")]
-        public string ParkingCost { get; set; }
+        //[Display(Name = "Cost")]
+        //public string ParkingCost { get; set; }
     }
 }

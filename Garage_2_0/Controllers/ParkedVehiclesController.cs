@@ -175,12 +175,13 @@ namespace Garage_2_0.Controllers
         //    return View(parkedVehicle);
         //}
 
+        // GET: ParkedVehicles/CheckOut/5
         public ActionResult CheckOut(int? id)
         {
             var ParkedVehicle = db.ParkedVehicles.Find(id);
             var ParkStopTime = DateTime.Now;  // move to Confirmed
-            var ParkingMinutes = ParkStopTime.Subtract(ParkedVehicle.StartTime).TotalMinutes;
-            const double COST_PER_MINUTE = 0.20;
+            //var ParkingMinutes = ParkStopTime.Subtract(ParkedVehicle.StartTime).TotalMinutes;
+            //const double COST_PER_MINUTE = 0.20;
 
             // var temp = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm"));
 
@@ -189,61 +190,42 @@ namespace Garage_2_0.Controllers
                 Id = ParkedVehicle.Id,
                 RegNo = ParkedVehicle.RegNo,
                 StartTime = ParkedVehicle.StartTime.ToString("g"),
-                StopTime = ParkStopTime.ToString("g"),
-                ParkingTime = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm")),
-                // ParkingCost = (Convert.ToInt32(ParkingMinutes) * COST_PER_MINUTE).ToString() + " kr."
-                ParkingCost = Math.Ceiling(ParkingMinutes * COST_PER_MINUTE).ToString() + " kr."
+                //StopTime = "not set yet",
+                //StopTime = ParkStopTime.ToString("g"),
+                //ParkingTime = "not set yet",
+                // ParkingTime = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm")),
+                //ParkingCost = "not set yet"
+                //ParkingCost = Math.Floor(ParkingMinutes * COST_PER_MINUTE).ToString() + " kr."
             };
 
-            // return Content(ParkingMinutes.ToString());
-            // return Content(temp);
             return View(CheckOutVehicle);
         }
 
-        // "00:22:28"   , 22 hours, 45 minutes
-        private string formatTimeSpan(string timeExpression)
+        // generats receipt
+        public ActionResult ConfirmCheckout(int? id)
         {
-            var timeSpan = "";
-            var timeList = timeExpression.Split(':');
+            var ParkedVehicle = db.ParkedVehicles.Find(id);
+            var ParkStopTime = DateTime.Now;  // move to Confirmed
+            var ParkingMinutes = ParkStopTime.Subtract(ParkedVehicle.StartTime).TotalMinutes;
+            const double COST_PER_MINUTE = 0.20;
 
-            // Very quick chechout, customer regrets checkin
-            if (timeList[0] == "00" && timeList[1] == "00" && timeList[2] == "00") return "No time registred";
+            // var temp = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm"));
 
-            // Days
-            if (timeList[0] != "00")
+            var CheckOutVehicle = new ReceiptModel()
             {
-                if (timeList[0] == "01") timeSpan += "1 day ";
-                else timeSpan += (timeList[0] + " days ");
-            }
-
-            // Hours
-            if (timeList[1] != "00")
-            {
-                if (timeList[1] == "01") timeSpan += "1 hour";
-                else
-                {
-                    if ((timeList[1])[0] == '0')    timeSpan += ((timeList[1])[1] + " hours");
-                    else timeSpan += ((timeList[1]) + " hours");
-                }
-            }
-
-            // Minutes
-            if (timeList[2] != "00")
-            {
-                if (timeList[2] == "01") timeSpan += " and 1 minute.";
-                else
-                {
-                    if ((timeList[2])[0] == '0') timeSpan += " and " + ((timeList[2])[1] + " minutes.");
-                    else timeSpan += " and " + ((timeList[2]) + " minutes.");
-                }
-            }
-
-            return timeSpan;
+                Id = ParkedVehicle.Id,
+                RegNo = ParkedVehicle.RegNo,
+                StartTime = ParkedVehicle.StartTime.ToString("g"),
+                StopTime = ParkStopTime.ToString("g"),
+                ParkingTime = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm")),
+                ParkingCost = Math.Floor(ParkingMinutes * COST_PER_MINUTE).ToString() + " kr."
+            };
+            return View(CheckOutVehicle);
         }
 
 
         // POST: ParkedVehicles/Delete/5
-        [HttpPost, ActionName("CheckOut")]
+        [HttpPost, ActionName("ConfirmCheckout")]
         [ValidateAntiForgeryToken]
         public ActionResult CheckOutConfirmed(int id)
         {
@@ -251,6 +233,66 @@ namespace Garage_2_0.Controllers
             db.ParkedVehicles.Remove(parkedVehicle);
             db.SaveChanges();
             return RedirectToAction("Index");
+            // return RedirectToAction("Home");
+        }
+
+        //  // POST: ParkedVehicles/Delete/5
+        //  [HttpPost, ActionName("CheckOut")]
+        //  [ValidateAntiForgeryToken]
+        //  public ActionResult CheckOutConfirmed(int id)
+        //  {
+        //    ParkedVehicle parkedVehicle = db.ParkedVehicles.Find(id);
+        //    db.ParkedVehicles.Remove(parkedVehicle);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //  }
+
+        // "00:22:28"   , 22 hours, 45 minutes
+        private string formatTimeSpan(string timeExpression)
+        {
+            var timeSpan = "";
+            var timeList = timeExpression.Split(':');
+            bool day = false;
+            bool hour = false;
+
+            // A Dimitri = very quick chechout, customer regrets checkin within one minute
+            if (timeList[0] == "00" && timeList[1] == "00" && timeList[2] == "00") return "No time registred";
+
+            // Add days to output string
+            if (timeList[0] != "00")
+            {
+                day = true;
+                if (timeList[0] == "01") timeSpan += "1 day ";
+                else timeSpan += (timeList[0] + " days ");
+            }
+
+            // Add hours to string
+            if (timeList[1] != "00")
+            {
+                hour = true;
+                if (timeList[1] == "01") timeSpan += "1 hour";
+                else
+                {
+                    if ((timeList[1])[0] == '0') timeSpan += ((timeList[1])[1] + " hours");
+                    else timeSpan += ((timeList[1]) + " hours");
+                }
+            }
+
+            // Add minutes to string
+            string and = " ";
+            if (day == true && hour == true) and = " and ";
+
+            if (timeList[2] != "00")
+            {
+                if (timeList[2] == "01") timeSpan += (and + "1 minute.");
+                else
+                {
+                    if ((timeList[2])[0] == '0') timeSpan += and + ((timeList[2])[1] + " minutes.");
+                    else timeSpan += and + ((timeList[2]) + " minutes.");
+                }
+            }
+
+            return timeSpan;
         }
 
         protected override void Dispose(bool disposing)
