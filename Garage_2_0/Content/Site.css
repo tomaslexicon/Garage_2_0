@@ -81,6 +81,11 @@ textarea {
     margin-right: 20px;
 }
 
+.btn-lg:hover, .btn-lg:active{
+
+    background-color:darkgray;
+    border-color:white;
+}
 article{
 
     margin-top: 10px;
