@@ -11,6 +11,7 @@ namespace Garage_2_0.ViewModels
     {
         public int Id { get; set; }
 
+        [Display(Name = "Type")]
         public VehicleType Type { get; set; }
 
         [Required]
