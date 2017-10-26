@@ -32,8 +32,8 @@ namespace Garage_2_0.Controllers
 
         private List<OverviewVehicle> GetOverviewVehicleList(string sortBy, bool isDescending, string search)
         {
-            bool useSearch = string.IsNullOrEmpty(search);
-            var v = db.ParkedVehicles.Where(p => useSearch ? true : p.RegNo.ToLower().Contains(search.ToLower())).Select(p => new OverviewVehicle
+            bool searchIsEmpty = string.IsNullOrEmpty(search);
+            var v = db.ParkedVehicles.Where(p => searchIsEmpty ? true : p.RegNo.ToLower().Contains(search.ToLower())).Select(p => new OverviewVehicle
             {
                 Id = p.Id,
                 RegNo = p.RegNo,
