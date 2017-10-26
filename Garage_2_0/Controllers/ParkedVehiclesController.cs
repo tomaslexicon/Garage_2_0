@@ -21,12 +21,10 @@ namespace Garage_2_0.Controllers
         public ActionResult Index(string sortBy = "RegNo", string isDescending = "True", string search = "")
         {
             bool desc = isDescending.ToLower() == "true";
-            string searchString = search; // TODO: fix whitespaces
-
             var model = new OverviewModel();
             model.IsDescending = desc;
             model.SortBy = sortBy;
-            model.Search = searchString;
+            model.Search = search;
             model.Vehicles = GetOverviewVehicleList(sortBy, desc, search);
 
             return View(model);
@@ -158,6 +156,44 @@ namespace Garage_2_0.Controllers
             return View(model);
         }
 
+        //[HttpPost, ActionName("Edit")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult EditPost(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+
+        //    var vehicleToUpdate = db.ParkedVehicles.Find(id);
+
+        //    //var vh = db.ParkedVehicles.Where(p => p.RegNo == vehicleToUpdate.RegNo && p.Id != vehicleToUpdate.Id).ToList();
+        //    //if (vh.Count != 0)
+        //    //{
+        //    //    vehicleToUpdate.StartTime = db.ParkedVehicles.AsNoTracking().FirstOrDefault(p => p.Id == vehicleToUpdate.Id).StartTime;
+        //    //    return View(vehicleToUpdate);
+        //    //}
+
+        //    if (TryUpdateModel(vehicleToUpdate, "ParkedVehicle",
+        //       new string[] { "Type,RegNo,Color,Brand,Model,NumberOfWheels" }))
+        //    {
+        //        try
+        //        {
+        //            db.SaveChanges();
+
+        //            TempData["Feedback"] = "Your " + vehicleToUpdate.Type + " with registration number " + vehicleToUpdate.RegNo + " has been successfully changed";
+        //            return RedirectToAction("Index");
+        //        }
+        //        catch (DataException /* dex */)
+        //        {
+        //            //Log the error (uncomment dex variable name and add a line here to write a log.
+        //            ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+        //        }
+        //    }
+
+        //    return View(vehicleToUpdate);
+        //}
+
         // POST: ParkedVehicles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -196,21 +232,6 @@ namespace Garage_2_0.Controllers
             TempData["Feedback"] = "Your " + v.Type + " with registration number " + v.RegNo + " has been successfully changed";
             return RedirectToAction("Index");
         }
-
-        //// GET: ParkedVehicles/Delete/5
-        //public ActionResult CheckOut(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    ParkedVehicle parkedVehicle = db.ParkedVehicles.Find(id);
-        //    if (parkedVehicle == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(parkedVehicle);
-        //}
 
         // GET: ParkedVehicles/CheckOut/5
         public ActionResult CheckOut(int? id)
