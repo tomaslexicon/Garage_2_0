@@ -15,7 +15,7 @@ namespace Garage_2_0.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description.";
+            ViewBag.Message = "Our vision";
 
             return View();
         }
