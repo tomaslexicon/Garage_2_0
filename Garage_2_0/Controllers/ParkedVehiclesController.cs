@@ -79,7 +79,7 @@ namespace Garage_2_0.Controllers
             model.Brand = parkedVehicle.Brand;
             model.Model = parkedVehicle.Model;
             model.NumberOfWheels = parkedVehicle.NumberOfWheels;
-            model.StartTime = parkedVehicle.StartTime.ToString("g");                        
+            model.StartTime = parkedVehicle.StartTime.ToString("g");
             model.ParkingTime = formatTimeSpan(DateTime.Now.Subtract(parkedVehicle.StartTime).ToString(@"dd\:hh\:mm"));
 
             return View(model);
@@ -238,7 +238,7 @@ namespace Garage_2_0.Controllers
             return View(CheckOutVehicle);
         }
 
-        // generats receipt
+        // generates receipt
         public ActionResult ConfirmCheckout(int? id)
         {
             var ParkedVehicle = db.ParkedVehicles.Find(id);
@@ -246,7 +246,12 @@ namespace Garage_2_0.Controllers
             var ParkingMinutes = ParkStopTime.Subtract(ParkedVehicle.StartTime).TotalMinutes;
             const double COST_PER_MINUTE = 0.20;
 
-            // var temp = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm"));
+            //string temp1 = formatTimeSpan("01:02:00");
+            //string temp2 = formatTimeSpan("01:02:30");
+            //string temp3 = formatTimeSpan("00:22:10");
+            //string temp4 = formatTimeSpan("01:12:00");
+            //string temp5 = formatTimeSpan("01:00:09");
+            //string temp6 = formatTimeSpan("01:00:40");
 
             var CheckOutVehicle = new ReceiptModel()
             {
@@ -284,61 +289,65 @@ namespace Garage_2_0.Controllers
         //    return RedirectToAction("Index");
         //  }
 
-        // "00:22:28"   , 22 hours, 45 minutes
+        // 01:02:00
         private string formatTimeSpan(string timeExpression)
         {
             var timeSpan = "";
             var timeList = timeExpression.Split(':');
-            bool day = false;
-            bool hour = false;
+            string separator = "";
 
-            // A Dimitri = very quick chechout, customer regrets checkin within one minute
+            // Very quick chechout, customer regrets checkin within one minute
             if (timeList[0] == "00" && timeList[1] == "00" && timeList[2] == "00") return "No time registred";
 
             // Add days to output string
             if (timeList[0] != "00")
             {
-                day = true;
+                if (timeList[2] == "00") separator = " and ";
+                else separator = ", ";
+
                 if (timeList[0] == "01") timeSpan += "1 day ";
-                else timeSpan += (timeList[0] + " days ");
+                else
+                {
+                    if ((timeList[0])[0] == '0') timeSpan += ((timeList[0])[1] + " days ");
+                    else timeSpan += ((timeList[0]) + " days ");
+                }
             }
 
             // Add hours to string
             if (timeList[1] != "00")
             {
-                hour = true;
-                if (timeList[1] == "01") timeSpan += "1 hour";
+                if (timeList[1] == "01") timeSpan += (separator + "1 hour");
                 else
                 {
-                    if ((timeList[1])[0] == '0') timeSpan += ((timeList[1])[1] + " hours");
-                    else timeSpan += ((timeList[1]) + " hours");
+                    if ((timeList[1])[0] == '0') timeSpan += separator + (timeList[1])[1] + " hours";
+                    else timeSpan += separator + (timeList[1] + " hours");
                 }
+                separator = " and ";
             }
 
             // Add minutes to string
-            string and = " ";
-            if (day == true && hour == true) and = " and ";
-
             if (timeList[2] != "00")
             {
-                if (timeList[2] == "01") timeSpan += (and + "1 minute.");
+                if (separator == ", ") separator = " and ";
+                if (timeList[2] == "01") timeSpan += separator + "1 minute.";
                 else
                 {
-                    if ((timeList[2])[0] == '0') timeSpan += and + ((timeList[2])[1] + " minutes.");
-                    else timeSpan += and + ((timeList[2]) + " minutes.");
+                    if ((timeList[2])[0] == '0') timeSpan += separator + (timeList[2])[1] + " minutes.";
+                    else timeSpan += separator + timeList[2] + " minutes.";
                 }
             }
 
             return timeSpan;
         }
 
-        protected override void Dispose(bool disposing)
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            db.Dispose();
         }
+        base.Dispose(disposing);
     }
+}
 }
