@@ -14,7 +14,7 @@
 </div>
 }
 <p>
-    @Html.ActionLink("Check In Vehicle", "CheckIn")
+    @Html.ActionLink("Check in vehicle", "CheckIn")
 </p>
 
 @using (Html.BeginForm())
@@ -37,7 +37,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                @Html.ActionLink("View All", "Index", new { sortBy = Model.SortBy, isDescending = Model.IsDescending, search = "" }, new { @class = "btn btn-default" })
+                @Html.ActionLink("View all", "Index", new { sortBy = Model.SortBy, isDescending = Model.IsDescending, search = "" }, new { @class = "btn btn-default" })
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@
         <td>
             @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
             @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("CheckOut", "CheckOut", new { id=item.Id })
+            @Html.ActionLink("Check out", "CheckOut", new { id=item.Id })
         </td>
     </tr>
 }

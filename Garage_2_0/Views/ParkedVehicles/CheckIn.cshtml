@@ -2,14 +2,14 @@
 
 @{
     string regNoExists = "";
-    ViewBag.Title = "Check In Vehicle";
+    ViewBag.Title = "Check in vehicle";
     if (Model != null && !Model.RegNo.IsEmpty())
     {
-        regNoExists = "Registration Number already exists.";
+        regNoExists = "Registration number already exists.";
     }
 }
 
-<h2>Check In Vehicle</h2>
+<h2>Check in vehicle</h2>
 
 
 @using (Html.BeginForm()) 
@@ -17,7 +17,7 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Check In Vehicle</h4>
+        <h4>Check in vehicle</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
