@@ -14,7 +14,7 @@ namespace Garage_2_0.ViewModels
 
         [Display(Name = "Type")]
         public VehicleType Type { get; set; }
-        [Display(Name = "Registration Number")]
+        [Display(Name = "Registration number")]
         public string RegNo { get; set; }
         [Display(Name = "Color")]
         public string Color { get; set; }
@@ -22,11 +22,11 @@ namespace Garage_2_0.ViewModels
         public string Brand { get; set; }
         [Display(Name = "Model")]
         public string Model { get; set; }
-        [Display(Name = "Number Of Wheels")]
+        [Display(Name = "Number of wheels")]
         public int NumberOfWheels { get; set; }
-        [Display(Name = "Start Time")]
+        [Display(Name = "Start time")]
         public string StartTime { get; set; }
-        [Display(Name = "Parking Time")]
+        [Display(Name = "Parking time")]
         public string ParkingTime { get; set; }
 
 

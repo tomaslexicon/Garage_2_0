@@ -37,7 +37,7 @@ namespace Garage_2_0.Controllers
             {
                 Id = p.Id,
                 RegNo = p.RegNo,
-                Color = p.Color,
+                Brand = p.Brand,
                 StartTime = p.StartTime,
                 Type = p.Type
             });
@@ -48,8 +48,8 @@ namespace Garage_2_0.Controllers
                     return isDescending ? v.OrderByDescending(i => i.Type.ToString()).ToList() : v.OrderBy(i => i.Type.ToString()).ToList();
                 case "starttime":
                     return isDescending ? v.OrderByDescending(i => i.StartTime).ToList() : v.OrderBy(i => i.StartTime).ToList();
-                case "color":
-                    return isDescending ? v.OrderByDescending(i => i.Color).ToList() : v.OrderBy(i => i.Color).ToList();
+                case "brand":
+                    return isDescending ? v.OrderByDescending(i => i.Brand).ToList() : v.OrderBy(i => i.Brand).ToList();
                 default:
                     return isDescending ? v.OrderByDescending(i => i.RegNo).ToList() : v.OrderBy(i => i.RegNo).ToList();
             }
@@ -281,7 +281,7 @@ namespace Garage_2_0.Controllers
                 StartTime = ParkedVehicle.StartTime.ToString("g"),
                 StopTime = ParkStopTime.ToString("g"),
                 ParkingTime = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm")),
-                ParkingCost = Math.Floor(ParkingMinutes * COST_PER_MINUTE).ToString() + " kr."
+                ParkingCost = Math.Floor(ParkingMinutes * COST_PER_MINUTE).ToString() + " kr"
             };
             return View(CheckOutVehicle);
         }
@@ -350,11 +350,11 @@ namespace Garage_2_0.Controllers
             if (timeList[2] != "00")
             {
                 if (separator == ", ") separator = " and ";
-                if (timeList[2] == "01") timeSpan += separator + "1 minute.";
+                if (timeList[2] == "01") timeSpan += separator + "1 minute";
                 else
                 {
-                    if ((timeList[2])[0] == '0') timeSpan += separator + (timeList[2])[1] + " minutes.";
-                    else timeSpan += separator + timeList[2] + " minutes.";
+                    if ((timeList[2])[0] == '0') timeSpan += separator + (timeList[2])[1] + " minutes";
+                    else timeSpan += separator + timeList[2] + " minutes";
                 }
             }
 
