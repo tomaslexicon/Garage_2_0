@@ -156,6 +156,56 @@ namespace Garage_2_0.Controllers
             return View(model);
         }
 
+        public ActionResult Statistics()
+        {
+            var vehicles = db.ParkedVehicles.ToList();
+
+            var result = db.ParkedVehicles.Sum(v => v.NumberOfWheels); // ta bort kör linq lambda istället 
+
+            var model = new StatisticsModel()
+            {
+                NumberOfVehicles = db.ParkedVehicles.Count(),
+                mostPopularBrand = MostPopularBrand(),
+                TotalNumberOfWheels = db.ParkedVehicles.Sum(v => v.NumberOfWheels), 
+                TotalCost = CalculateTotalCost(vehicles)
+            };
+
+
+            return View(model);
+        }
+
+        private int CalculateTotalCost(List<ParkedVehicle> vehicles)
+        {
+            double totalParkingCost = 0;
+
+            foreach (var vehicle in vehicles)
+            {
+                totalParkingCost += 0.2 * (Convert.ToDouble(DateTime.Now.Subtract(vehicle.StartTime).TotalMinutes));
+            }
+
+            return Convert.ToInt32(totalParkingCost);
+        }
+
+        
+
+        private string MostPopularBrand()
+        {
+            var result = db.ParkedVehicles
+                .GroupBy(x => x.Brand)
+                .OrderBy(x => x.Count())
+                .First().Key;
+
+ //           var output = words
+ //.GroupBy(word => word)
+ //.OrderByDescending(group => group.Count())
+ //.Select(group => group.Key);
+
+
+            return result;
+        }
+
+
+
         //[HttpPost, ActionName("Edit")]
         //[ValidateAntiForgeryToken]
         //public ActionResult EditPost(int? id)
