@@ -160,7 +160,7 @@ namespace Garage_2_0.Controllers
         {
             var vehicles = db.ParkedVehicles.ToList();
 
-            var result = db.ParkedVehicles.Sum(v => v.NumberOfWheels); // ta bort kör linq lambda istället 
+            //var result = db.ParkedVehicles.Sum(v => v.NumberOfWheels); // ta bort kör linq lambda istället 
 
             var model = new StatisticsModel()
             {
@@ -169,9 +169,7 @@ namespace Garage_2_0.Controllers
                 TotalNumberOfWheels = db.ParkedVehicles.Sum(v => v.NumberOfWheels), 
                 TotalCost = CalculateTotalCost(vehicles)
             };
-
-
-            return View(model);
+                        return View(model);
         }
 
         private int CalculateTotalCost(List<ParkedVehicle> vehicles)
@@ -192,15 +190,10 @@ namespace Garage_2_0.Controllers
         {
             var result = db.ParkedVehicles
                 .GroupBy(x => x.Brand)
-                .OrderBy(x => x.Count())
+                .OrderByDescending(x => x.Count())                
                 .First().Key;
 
- //           var output = words
- //.GroupBy(word => word)
- //.OrderByDescending(group => group.Count())
- //.Select(group => group.Key);
-
-
+ 
             return result;
         }
 
