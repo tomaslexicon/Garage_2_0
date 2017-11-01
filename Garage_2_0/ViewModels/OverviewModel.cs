@@ -12,13 +12,13 @@ namespace Garage_2_0.ViewModels
         [Display(Name = "Type")]
         public VehicleType Type { get; set; }
 
-        [Display(Name = "Registration Number")]
+        [Display(Name = "Registration number")]
         public string RegNo { get; set; }
 
-        [Display(Name = "Color")]
-        public string Color { get; set; }
+        [Display(Name = "Brand")]
+        public string Brand { get; set; }
 
-        [Display(Name = "Start Time")]
+        [Display(Name = "Start time")]
         public DateTime StartTime { get; set; }
         public int Id { get; set; }
     }

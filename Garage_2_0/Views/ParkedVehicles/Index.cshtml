@@ -52,7 +52,7 @@
             @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().Type).ToString(), "Index", new { sortBy = "Type", isDescending = !(Model.IsDescending), search = Model.Search })
         </th>
         <th>
-            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().Color).ToString(), "Index", new { sortBy = "Color", isDescending = !(Model.IsDescending), search = Model.Search })
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().Brand).ToString(), "Index", new { sortBy = "Brand", isDescending = !(Model.IsDescending), search = Model.Search })
         </th>
         <th>
             @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().StartTime).ToString(), "Index", new { sortBy = "StartTime", isDescending = !(Model.IsDescending), search = Model.Search })
@@ -69,7 +69,7 @@
             @Html.DisplayFor(modelItem => item.Type)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Color)
+            @Html.DisplayFor(modelItem => item.Brand)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.StartTime)

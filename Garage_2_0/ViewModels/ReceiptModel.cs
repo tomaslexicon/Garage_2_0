@@ -6,16 +6,16 @@ namespace Garage_2_0.ViewModels
     {
         public int Id { get; set; }
 
-        [Display(Name = "Registration Number")]
+        [Display(Name = "Registration number")]
         public string RegNo { get; set; }
 
-        [Display(Name = "Start Time")]
+        [Display(Name = "Start time")]
         public string StartTime { get; set; }
 
-        [Display(Name = "Stop Time")]
+        [Display(Name = "Stop time")]
         public string StopTime { get; set; }
 
-        [Display(Name = "Parking Time")]
+        [Display(Name = "Parking time")]
         public string ParkingTime { get; set; }
 
         [Display(Name = "Cost")]
