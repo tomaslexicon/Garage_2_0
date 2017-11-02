@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Garage_2_0.Models
 {
-    public enum VehicleType
+    public enum VehicleTypeEnum
     {
         Car,
         Motorcycle,
@@ -19,8 +19,14 @@ namespace Garage_2_0.Models
     {
         public int Id { get; set; }
 
-        [Display(Name = "Type")]
-        public VehicleType Type { get; set; }
+        //[Display(Name = "Type")]
+        //public VehicleTypeEnum Type { get; set; }
+
+        public int MemberId { get; set; }
+        public int VehicleTypeId { get; set; }
+
+        //public VehicleTypeEnum Type { get; set; }
+
 
         [Required]
         [Display(Name = "Registration Number")]

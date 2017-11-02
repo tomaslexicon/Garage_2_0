@@ -38,8 +38,8 @@ namespace Garage_2_0.Controllers
                 Id = p.Id,
                 RegNo = p.RegNo,
                 Brand = p.Brand,
-                StartTime = p.StartTime,
-                Type = p.Type
+                StartTime = p.StartTime
+                //Type = p.Type
             });
 
             switch (sortBy.ToLower())
@@ -71,7 +71,7 @@ namespace Garage_2_0.Controllers
             var model = new DetailModel();
 
             model.Id = parkedVehicle.Id;
-            model.Type = parkedVehicle.Type;
+            //model.Type = parkedVehicle.Type;
             model.RegNo = parkedVehicle.RegNo;
             model.Color = parkedVehicle.Color;
             model.Brand = parkedVehicle.Brand;
@@ -111,7 +111,7 @@ namespace Garage_2_0.Controllers
             {
                 Id = checkInVehicle.Id,
                 RegNo = checkInVehicle.RegNo,
-                Type = checkInVehicle.Type,
+                //Type = checkInVehicle.Type,
                 Color = checkInVehicle.Color,
                 Brand = checkInVehicle.Brand,
                 Model = checkInVehicle.Model,
@@ -147,7 +147,7 @@ namespace Garage_2_0.Controllers
                 Color = parkedVehicle.Color,
                 Brand = parkedVehicle.Brand,
                 Model = parkedVehicle.Model,
-                Type = parkedVehicle.Type,
+                //Type = parkedVehicle.Type,
                 NumberOfWheels = parkedVehicle.NumberOfWheels,
                 StartTime = parkedVehicle.StartTime,
                 OriginalRegNo = parkedVehicle.RegNo
@@ -222,14 +222,14 @@ namespace Garage_2_0.Controllers
                 Color = parkedVehicle.Color,
                 Brand = parkedVehicle.Brand,
                 Model = parkedVehicle.Model,
-                Type = parkedVehicle.Type,
+                //Type = parkedVehicle.Type,
                 NumberOfWheels = parkedVehicle.NumberOfWheels,
                 StartTime = startTime
             };
 
             db.Entry(v).State = EntityState.Modified;
             db.SaveChanges();
-            TempData["Feedback"] = "Your " + v.Type + " with registration number " + v.RegNo + " has been successfully changed";
+            //TempData["Feedback"] = "Your " + v.Type + " with registration number " + v.RegNo + " has been successfully changed";
             return RedirectToAction("Index");
         }
 
