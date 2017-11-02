@@ -128,6 +128,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\ParkedVehiclesController.cs" />
     <Compile Include="DataAccessLayer\GarageContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -144,6 +145,10 @@
     <Compile Include="Migrations\201711021043065_Initial2.cs" />
     <Compile Include="Migrations\201711021043065_Initial2.Designer.cs">
       <DependentUpon>201711021043065_Initial2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711021238068_Initial3.cs" />
+    <Compile Include="Migrations\201711021238068_Initial3.Designer.cs">
+      <DependentUpon>201711021238068_Initial3.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Member.cs" />
@@ -204,6 +209,11 @@
     <Content Include="Views\ParkedVehicles\Edit.cshtml" />
     <Content Include="Views\ParkedVehicles\Index.cshtml" />
     <Content Include="Views\ParkedVehicles\ConfirmCheckout.cshtml" />
+    <Content Include="Views\Members\Create.cshtml" />
+    <Content Include="Views\Members\Delete.cshtml" />
+    <Content Include="Views\Members\Details.cshtml" />
+    <Content Include="Views\Members\Edit.cshtml" />
+    <Content Include="Views\Members\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -225,6 +235,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711021043065_Initial2.resx">
       <DependentUpon>201711021043065_Initial2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711021238068_Initial3.resx">
+      <DependentUpon>201711021238068_Initial3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

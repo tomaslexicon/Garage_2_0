@@ -12,5 +12,8 @@ namespace Garage_2_0.Models
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public int MembershipId { get; set; }
+
+        // navigational properties
+        public virtual ICollection<ParkedVehicle> ParkedVehicles { get; set; }
     }
 }
