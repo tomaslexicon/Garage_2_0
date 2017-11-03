@@ -291,12 +291,7 @@ namespace Garage_2_0.Controllers
                 Id = ParkedVehicle.Id,
                 RegNo = ParkedVehicle.RegNo,
                 StartTime = ParkedVehicle.StartTime.ToString("g"),
-                //StopTime = "not set yet",
-                //StopTime = ParkStopTime.ToString("g"),
-                //ParkingTime = "not set yet",
-                // ParkingTime = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm")),
-                //ParkingCost = "not set yet"
-                //ParkingCost = Math.Floor(ParkingMinutes * COST_PER_MINUTE).ToString() + " kr."
+               
             };
 
             return View(CheckOutVehicle);
@@ -305,17 +300,22 @@ namespace Garage_2_0.Controllers
         // generates receipt
         public ActionResult ConfirmCheckout(int? id)
         {
-            var ParkedVehicle = db.ParkedVehicles.Find(id);
-            var ParkStopTime = DateTime.Now;  // move to Confirmed
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            // var ParkedVehicle = db.ParkedVehicles.Find(id);
+            var ParkedVehicle = db.ParkedVehicles
+                .Include(v => v.Member)
+                .Where(v => v.Id == id)
+                .FirstOrDefault();
+
+            var ParkStopTime = DateTime.Now; 
             var ParkingMinutes = ParkStopTime.Subtract(ParkedVehicle.StartTime).TotalMinutes;
             const double COST_PER_MINUTE = 0.20;
 
-            //string temp1 = formatTimeSpan("01:02:00");
-            //string temp2 = formatTimeSpan("01:02:30");
-            //string temp3 = formatTimeSpan("00:22:10");
-            //string temp4 = formatTimeSpan("01:12:00");
-            //string temp5 = formatTimeSpan("01:00:09");
-            //string temp6 = formatTimeSpan("01:00:40");
+            
 
             var CheckOutVehicle = new ReceiptModel()
             {
@@ -324,7 +324,10 @@ namespace Garage_2_0.Controllers
                 StartTime = ParkedVehicle.StartTime.ToString("g"),
                 StopTime = ParkStopTime.ToString("g"),
                 ParkingTime = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm")),
-                ParkingCost = Math.Floor(ParkingMinutes * COST_PER_MINUTE).ToString() + " kr"
+                ParkingCost = Math.Floor(ParkingMinutes * COST_PER_MINUTE).ToString() + " kr",
+                LastName = ParkedVehicle.Member.LastName,
+                FirstName = ParkedVehicle.Member.FirstName
+                
             };
             return View(CheckOutVehicle);
         }
@@ -339,21 +342,10 @@ namespace Garage_2_0.Controllers
             db.ParkedVehicles.Remove(parkedVehicle);
             db.SaveChanges();
             return RedirectToAction("Index");
-            // return RedirectToAction("Home");
+            
         }
 
-        //  // POST: ParkedVehicles/Delete/5
-        //  [HttpPost, ActionName("CheckOut")]
-        //  [ValidateAntiForgeryToken]
-        //  public ActionResult CheckOutConfirmed(int id)
-        //  {
-        //    ParkedVehicle parkedVehicle = db.ParkedVehicles.Find(id);
-        //    db.ParkedVehicles.Remove(parkedVehicle);
-        //    db.SaveChanges();
-        //    return RedirectToAction("Index");
-        //  }
-
-        // 01:02:00
+        
         private string formatTimeSpan(string timeExpression)
         {
             var timeSpan = "";

@@ -20,5 +20,11 @@ namespace Garage_2_0.ViewModels
 
         [Display(Name = "Cost")]
         public string ParkingCost { get; set; }
+
+        [Display(Name = "Last name")]
+        public string LastName { get; set; }
+
+        [Display(Name = "First name")]
+        public string FirstName { get; set; }
     }
 }
