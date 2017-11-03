@@ -10,10 +10,13 @@ namespace Garage_2_0.ViewModels
     public class OverviewVehicle
     {
         [Display(Name = "Type")]
-        public VehicleTypeEnum Type { get; set; }
+        public string Type { get; set; }
 
         [Display(Name = "Registration number")]
         public string RegNo { get; set; }
+
+        [Display(Name = "Owner name")]
+        public string OwnerName { get; set; }
 
         [Display(Name = "Brand")]
         public string Brand { get; set; }
