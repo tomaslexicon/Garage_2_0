@@ -10,7 +10,7 @@ namespace Garage_2_0.ViewModels
     public class OverviewVehicle
     {
         [Display(Name = "Type")]
-        public VehicleType Type { get; set; }
+        public VehicleTypeEnum Type { get; set; }
 
         [Display(Name = "Registration number")]
         public string RegNo { get; set; }

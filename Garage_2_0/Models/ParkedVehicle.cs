@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Garage_2_0.Models
 {
-    public enum VehicleType
+    public enum VehicleTypeEnum
     {
         Car,
         Motorcycle,
@@ -19,8 +19,9 @@ namespace Garage_2_0.Models
     {
         public int Id { get; set; }
 
-        [Display(Name = "Type")]
-        public VehicleType Type { get; set; }
+        // Foreign Keys
+        public int MemberId { get; set; }
+        public int VehicleTypeId { get; set; }
 
         [Required]
         [Display(Name = "Registration Number")]
@@ -48,5 +49,9 @@ namespace Garage_2_0.Models
 
         [Display(Name = "Start Time")]
         public DateTime StartTime { get; set; }
+
+        // navigational properties
+        public virtual Member Member { get; set; }
+        public virtual VehicleType VehicleType { get; set; }
     }
 }
