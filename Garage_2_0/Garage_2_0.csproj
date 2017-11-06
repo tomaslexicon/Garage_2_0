@@ -164,8 +164,10 @@
     <Compile Include="ViewModels\CheckOutModel.cs" />
     <Compile Include="ViewModels\EditModel.cs" />
     <Compile Include="ViewModels\MemberModel.cs" />
+    <Compile Include="ViewModels\OverviewDetailModel.cs" />
     <Compile Include="ViewModels\OverviewModel.cs" />
     <Compile Include="ViewModels\ReceiptModel.cs" />
+    <Compile Include="ViewModels\StatisticsModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -219,6 +221,8 @@
     <Content Include="Views\Members\Details.cshtml" />
     <Content Include="Views\Members\Edit.cshtml" />
     <Content Include="Views\Members\Index.cshtml" />
+    <Content Include="Views\ParkedVehicles\Statistics.cshtml" />
+    <Content Include="Views\ParkedVehicles\OverviewDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

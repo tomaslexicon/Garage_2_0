@@ -33,19 +33,22 @@ namespace Garage_2_0.Controllers
         private List<OverviewVehicle> GetOverviewVehicleList(string sortBy, bool isDescending, string search)
         {
             bool searchIsEmpty = string.IsNullOrEmpty(search);
-            var v = db.ParkedVehicles.Where(p => searchIsEmpty ? true : p.RegNo.ToLower().Contains(search.ToLower())).Select(p => new OverviewVehicle
+            var v = db.ParkedVehicles.Include(e => e.Member).Include(e => e.VehicleType).Where(p => searchIsEmpty ? true : p.RegNo.ToLower().Contains(search.ToLower())).Select(p => new OverviewVehicle
             {
                 Id = p.Id,
                 RegNo = p.RegNo,
+                Type = p.VehicleType.Type,
                 Brand = p.Brand,
-                StartTime = p.StartTime
-                //Type = p.Type
+                StartTime = p.StartTime,
+                OwnerName = p.Member.LastName + ", " + p.Member.FirstName
             });
 
             switch (sortBy.ToLower())
             {
                 case "type":
                     return isDescending ? v.OrderByDescending(i => i.Type.ToString()).ToList() : v.OrderBy(i => i.Type.ToString()).ToList();
+                case "ownername":
+                    return isDescending ? v.OrderByDescending(i => i.OwnerName).ToList() : v.OrderBy(i => i.OwnerName).ToList();
                 case "starttime":
                     return isDescending ? v.OrderByDescending(i => i.StartTime).ToList() : v.OrderBy(i => i.StartTime).ToList();
                 case "brand":
@@ -55,6 +58,64 @@ namespace Garage_2_0.Controllers
             }
         }
 
+        // GET: ParkedVehicles
+        public ActionResult OverviewDetails(string sortBy = "RegNo", string isDescending = "True", string search = "")
+        {
+            bool desc = isDescending.ToLower() == "true";
+            var model = new OverviewDetailModel();
+            model.IsDescending = desc;
+            model.SortBy = sortBy;
+            model.Search = search;
+            model.Vehicles = GetOverviewDetailVehicleList(sortBy, desc, search);
+
+            return View(model);
+        }
+
+        private List<OverviewDetailVehicle> GetOverviewDetailVehicleList(string sortBy, bool isDescending, string search)
+        {
+            bool searchIsEmpty = string.IsNullOrEmpty(search);
+            var v = db.ParkedVehicles.Include(e => e.Member).Include(e => e.VehicleType).Where(p => searchIsEmpty ? true : p.RegNo.ToLower().Contains(search.ToLower())).Select(p => new OverviewDetailVehicle
+            {
+                Id = p.Id,
+                RegNo = p.RegNo,
+                Type = p.VehicleType.Type,
+                Brand = p.Brand,
+                Color = p.Color,
+                NumberOfWheels = p.NumberOfWheels,
+                StartTime = p.StartTime,
+                FirstName = p.Member.FirstName,
+                LastName = p.Member.LastName,
+                MembershipId = p.Member.MembershipId
+                //OwnerName = p.Member.LastName + ", " + p.Member.FirstName
+            });
+
+            switch (sortBy.ToLower())
+            {
+                case "type":
+                    return isDescending ? v.OrderByDescending(i => i.Type.ToString()).ToList() : v.OrderBy(i => i.Type.ToString()).ToList();
+                case "ownername":
+                    return isDescending ? v.OrderByDescending(i => i.LastName).ToList() : v.OrderBy(i => i.LastName).ToList();
+                case "starttime":
+                    return isDescending ? v.OrderByDescending(i => i.StartTime).ToList() : v.OrderBy(i => i.StartTime).ToList();
+                case "brand":
+                    return isDescending ? v.OrderByDescending(i => i.Brand).ToList() : v.OrderBy(i => i.Brand).ToList();
+                case "color":
+                    return isDescending ? v.OrderByDescending(i => i.Color).ToList() : v.OrderBy(i => i.Color).ToList();
+                case "numberofwheels":
+                    return isDescending ? v.OrderByDescending(i => i.NumberOfWheels).ToList() : v.OrderBy(i => i.NumberOfWheels).ToList();
+                case "membershipid":
+                    return isDescending ? v.OrderByDescending(i => i.MembershipId ).ToList() : v.OrderBy(i => i.MembershipId).ToList();
+                default:
+                    return isDescending ? v.OrderByDescending(i => i.RegNo).ToList() : v.OrderBy(i => i.RegNo).ToList();
+            }
+        }
+
+
+
+
+
+
+
         // GET: ParkedVehicles/Details/5
         public ActionResult Details(int? id)
         {
@@ -62,7 +123,7 @@ namespace Garage_2_0.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ParkedVehicle parkedVehicle = db.ParkedVehicles.Find(id);
+            ParkedVehicle parkedVehicle = db.ParkedVehicles.Include(p => p.VehicleType).Where(p => p.Id == id).First();
             if (parkedVehicle == null)
             {
                 return HttpNotFound();
@@ -71,7 +132,7 @@ namespace Garage_2_0.Controllers
             var model = new DetailModel();
 
             model.Id = parkedVehicle.Id;
-            //model.Type = parkedVehicle.Type;
+            model.Type = parkedVehicle.VehicleType.Type;
             model.RegNo = parkedVehicle.RegNo;
             model.Color = parkedVehicle.Color;
             model.Brand = parkedVehicle.Brand;
@@ -84,9 +145,20 @@ namespace Garage_2_0.Controllers
         }
 
         // GET: ParkedVehicles/CheckIn
-        public ActionResult CheckIn()
+        public ActionResult CheckIn(int? id)
         {
-            return View();
+            var types = BuildVehicleTypeList();
+            var members = BuildMemberList(id);
+
+            CheckInModel model = new CheckInModel
+            {
+                RegNo = "",
+                VehicleTypes = types,
+                Members = members,
+                Brand = "",
+            };
+
+            return View(model);
         }
 
         // POST: ParkedVehicles/CheckIn
@@ -94,16 +166,22 @@ namespace Garage_2_0.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CheckIn([Bind(Include = "Id,Type,RegNo,Color,Brand,Model,NumberOfWheels")] CheckInModel checkInVehicle)
+        public ActionResult CheckIn([Bind(Include = "Id,MemberId,Type,RegNo,Color,Brand,Model,NumberOfWheels")] CheckInModel checkInVehicle)
         {
             if (!ModelState.IsValid)
             {
+                checkInVehicle.Members = BuildMemberList(checkInVehicle.MemberId);
+                checkInVehicle.VehicleTypes = BuildVehicleTypeList(checkInVehicle.Type);
+
                 return View(checkInVehicle);
             }
 
             var v = db.ParkedVehicles.Where(p => p.RegNo == checkInVehicle.RegNo).ToList();
             if (v.Count != 0)
             {
+                checkInVehicle.Members = BuildMemberList(checkInVehicle.MemberId);
+                checkInVehicle.VehicleTypes = BuildVehicleTypeList(checkInVehicle.Type);
+
                 return View(checkInVehicle);
             }
 
@@ -111,12 +189,13 @@ namespace Garage_2_0.Controllers
             {
                 Id = checkInVehicle.Id,
                 RegNo = checkInVehicle.RegNo,
-                //Type = checkInVehicle.Type,
+                VehicleTypeId = checkInVehicle.Type,
                 Color = checkInVehicle.Color,
                 Brand = checkInVehicle.Brand,
                 Model = checkInVehicle.Model,
                 NumberOfWheels = checkInVehicle.NumberOfWheels,
-                StartTime = DateTime.Now
+                StartTime = DateTime.Now,
+                MemberId = checkInVehicle.MemberId        
             };
 
             db.ParkedVehicles.Add(parkedVehicle);
@@ -124,6 +203,26 @@ namespace Garage_2_0.Controllers
 
             TempData["Feedback"] = "Your " + checkInVehicle.Type + " with registration number " + checkInVehicle.RegNo + " has been checked in";
             return RedirectToAction("Index");
+        }
+
+        private IEnumerable<SelectListItem> BuildMemberList(int? id)
+        {
+            return db.Members.OrderBy(p => p.LastName).ToList().Select(m => new SelectListItem
+            {
+                Value = m.Id.ToString(),
+                Text = m.LastName + ", " + m.FirstName,
+                Selected = id == null ? false : m.Id == id      
+            });
+        }
+
+        private IEnumerable<SelectListItem> BuildVehicleTypeList(int? typeId = null)
+        {
+            return db.VehicleTypes.OrderBy(p => p.Type).ToList().Select(vt => new SelectListItem
+            {
+                Value = vt.Id.ToString(),
+                Text = vt.Type,
+                Selected = typeId == null ? false : vt.Id == typeId
+            });
         }
 
         // GET: ParkedVehicles/Edit/5
@@ -147,62 +246,74 @@ namespace Garage_2_0.Controllers
                 Color = parkedVehicle.Color,
                 Brand = parkedVehicle.Brand,
                 Model = parkedVehicle.Model,
-                //Type = parkedVehicle.Type,
                 NumberOfWheels = parkedVehicle.NumberOfWheels,
                 StartTime = parkedVehicle.StartTime,
-                OriginalRegNo = parkedVehicle.RegNo
+                OriginalRegNo = parkedVehicle.RegNo,
+                Members = BuildMemberList(parkedVehicle.MemberId),
+                VehicleTypes = BuildVehicleTypeList(parkedVehicle.VehicleTypeId),
+                Type = parkedVehicle.VehicleTypeId,
+                MemberId = parkedVehicle.MemberId
             };
 
             return View(model);
         }
 
-        //[HttpPost, ActionName("Edit")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult EditPost(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
+        public ActionResult Statistics()
+        {
+            var vehicles = db.ParkedVehicles.ToList();
 
-        //    var vehicleToUpdate = db.ParkedVehicles.Find(id);
+            //var result = db.ParkedVehicles.Sum(v => v.NumberOfWheels); // ta bort kör linq lambda istället 
 
-        //    //var vh = db.ParkedVehicles.Where(p => p.RegNo == vehicleToUpdate.RegNo && p.Id != vehicleToUpdate.Id).ToList();
-        //    //if (vh.Count != 0)
-        //    //{
-        //    //    vehicleToUpdate.StartTime = db.ParkedVehicles.AsNoTracking().FirstOrDefault(p => p.Id == vehicleToUpdate.Id).StartTime;
-        //    //    return View(vehicleToUpdate);
-        //    //}
+            var model = new StatisticsModel()
+            {
+                NumberOfVehicles = db.ParkedVehicles.Count(),
+                mostPopularBrand = MostPopularBrand(),
+                TotalNumberOfWheels = db.ParkedVehicles.Sum(v => v.NumberOfWheels), 
+                TotalCost = CalculateTotalCost(vehicles)
+            };
+                        return View(model);
+        }
 
-        //    if (TryUpdateModel(vehicleToUpdate, "ParkedVehicle",
-        //       new string[] { "Type,RegNo,Color,Brand,Model,NumberOfWheels" }))
-        //    {
-        //        try
-        //        {
-        //            db.SaveChanges();
+        private int CalculateTotalCost(List<ParkedVehicle> vehicles)
+        {
+            double totalParkingCost = 0;
 
-        //            TempData["Feedback"] = "Your " + vehicleToUpdate.Type + " with registration number " + vehicleToUpdate.RegNo + " has been successfully changed";
-        //            return RedirectToAction("Index");
-        //        }
-        //        catch (DataException /* dex */)
-        //        {
-        //            //Log the error (uncomment dex variable name and add a line here to write a log.
-        //            ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-        //        }
-        //    }
+            foreach (var vehicle in vehicles)
+            {
+                totalParkingCost += 0.2 * (Convert.ToDouble(DateTime.Now.Subtract(vehicle.StartTime).TotalMinutes));
+            }
 
-        //    return View(vehicleToUpdate);
-        //}
+            return Convert.ToInt32(totalParkingCost);
+        }
+
+        
+
+        private string MostPopularBrand()
+        {
+            var result = db.ParkedVehicles
+                .GroupBy(x => x.Brand)
+                .OrderByDescending(x => x.Count())                
+                .First().Key;
+
+ 
+            return result;
+        }
+
+
+
+
 
         // POST: ParkedVehicles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Type,RegNo,Color,Brand,Model,NumberOfWheels")] EditModel parkedVehicle)
+        public ActionResult Edit([Bind(Include = "Id,MemberId,Type,RegNo,Color,Brand,Model,NumberOfWheels")] EditModel parkedVehicle)
         {
             if (!ModelState.IsValid)
             {
+                parkedVehicle.Members = BuildMemberList(parkedVehicle.MemberId);
+                parkedVehicle.VehicleTypes = BuildVehicleTypeList(parkedVehicle.Type);
                 return View(parkedVehicle);
             }
 
@@ -210,6 +321,8 @@ namespace Garage_2_0.Controllers
             if (vh.Count != 0)
             {
                 parkedVehicle.StartTime = db.ParkedVehicles.AsNoTracking().FirstOrDefault(p => p.Id == parkedVehicle.Id).StartTime;
+                parkedVehicle.Members = BuildMemberList(parkedVehicle.MemberId);
+                parkedVehicle.VehicleTypes = BuildVehicleTypeList(parkedVehicle.Type);
                 return View(parkedVehicle);
             }
 
@@ -222,14 +335,15 @@ namespace Garage_2_0.Controllers
                 Color = parkedVehicle.Color,
                 Brand = parkedVehicle.Brand,
                 Model = parkedVehicle.Model,
-                //Type = parkedVehicle.Type,
+                VehicleTypeId = parkedVehicle.Type,
+                MemberId = parkedVehicle.MemberId,
                 NumberOfWheels = parkedVehicle.NumberOfWheels,
-                StartTime = startTime
+                StartTime = startTime,
             };
 
             db.Entry(v).State = EntityState.Modified;
             db.SaveChanges();
-            //TempData["Feedback"] = "Your " + v.Type + " with registration number " + v.RegNo + " has been successfully changed";
+            TempData["Feedback"] = "Your " + v.VehicleType + " with registration number " + v.RegNo + " has been successfully changed";
             return RedirectToAction("Index");
         }
 
@@ -248,12 +362,7 @@ namespace Garage_2_0.Controllers
                 Id = ParkedVehicle.Id,
                 RegNo = ParkedVehicle.RegNo,
                 StartTime = ParkedVehicle.StartTime.ToString("g"),
-                //StopTime = "not set yet",
-                //StopTime = ParkStopTime.ToString("g"),
-                //ParkingTime = "not set yet",
-                // ParkingTime = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm")),
-                //ParkingCost = "not set yet"
-                //ParkingCost = Math.Floor(ParkingMinutes * COST_PER_MINUTE).ToString() + " kr."
+               
             };
 
             return View(CheckOutVehicle);
@@ -262,17 +371,22 @@ namespace Garage_2_0.Controllers
         // generates receipt
         public ActionResult ConfirmCheckout(int? id)
         {
-            var ParkedVehicle = db.ParkedVehicles.Find(id);
-            var ParkStopTime = DateTime.Now;  // move to Confirmed
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            // var ParkedVehicle = db.ParkedVehicles.Find(id);
+            var ParkedVehicle = db.ParkedVehicles
+                .Include(v => v.Member)
+                .Where(v => v.Id == id)
+                .FirstOrDefault();
+
+            var ParkStopTime = DateTime.Now; 
             var ParkingMinutes = ParkStopTime.Subtract(ParkedVehicle.StartTime).TotalMinutes;
             const double COST_PER_MINUTE = 0.20;
 
-            //string temp1 = formatTimeSpan("01:02:00");
-            //string temp2 = formatTimeSpan("01:02:30");
-            //string temp3 = formatTimeSpan("00:22:10");
-            //string temp4 = formatTimeSpan("01:12:00");
-            //string temp5 = formatTimeSpan("01:00:09");
-            //string temp6 = formatTimeSpan("01:00:40");
+            
 
             var CheckOutVehicle = new ReceiptModel()
             {
@@ -281,7 +395,10 @@ namespace Garage_2_0.Controllers
                 StartTime = ParkedVehicle.StartTime.ToString("g"),
                 StopTime = ParkStopTime.ToString("g"),
                 ParkingTime = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm")),
-                ParkingCost = Math.Floor(ParkingMinutes * COST_PER_MINUTE).ToString() + " kr"
+                ParkingCost = Math.Floor(ParkingMinutes * COST_PER_MINUTE).ToString() + " kr",
+                LastName = ParkedVehicle.Member.LastName,
+                FirstName = ParkedVehicle.Member.FirstName
+                
             };
             return View(CheckOutVehicle);
         }
@@ -296,21 +413,10 @@ namespace Garage_2_0.Controllers
             db.ParkedVehicles.Remove(parkedVehicle);
             db.SaveChanges();
             return RedirectToAction("Index");
-            // return RedirectToAction("Home");
+            
         }
 
-        //  // POST: ParkedVehicles/Delete/5
-        //  [HttpPost, ActionName("CheckOut")]
-        //  [ValidateAntiForgeryToken]
-        //  public ActionResult CheckOutConfirmed(int id)
-        //  {
-        //    ParkedVehicle parkedVehicle = db.ParkedVehicles.Find(id);
-        //    db.ParkedVehicles.Remove(parkedVehicle);
-        //    db.SaveChanges();
-        //    return RedirectToAction("Index");
-        //  }
-
-        // 01:02:00
+        
         private string formatTimeSpan(string timeExpression)
         {
             var timeSpan = "";

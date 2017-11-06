@@ -43,10 +43,17 @@
     </div>
 }
 
+<p>
+    @Html.ActionLink("Detail view", "OverviewDetails")
+</p>
+
 <table class="table">
     <tr>
         <th>
             @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().RegNo).ToString(), "Index", new { sortBy = "RegNo", isDescending = !(Model.IsDescending), search = Model.Search })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().OwnerName).ToString(), "Index", new { sortBy = "OwnerName", isDescending = !(Model.IsDescending), search = Model.Search })
         </th>
         <th>
             @Html.ActionLink(Html.DisplayNameFor(model => model.Vehicles.First().Type).ToString(), "Index", new { sortBy = "Type", isDescending = !(Model.IsDescending), search = Model.Search })
@@ -60,28 +67,30 @@
         <th></th>
     </tr>
 
-    @foreach (var item in Model.Vehicles)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.RegNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Check out", "CheckOut", new { id = item.Id })
-            </td>
-        </tr>
-    }
+@foreach (var item in Model.Vehicles) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.RegNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OwnerName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Brand)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StartTime)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Check out", "CheckOut", new { id=item.Id })
+        </td>
+    </tr>
+}
 
 </table>
     

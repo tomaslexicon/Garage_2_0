@@ -1,0 +1,50 @@
+﻿@model Garage_2_0.ViewModels.StatisticsModel
+
+@{
+    ViewBag.Title = "Statistics";
+}
+
+<h2>Statistics</h2>
+
+<div>
+    <h4>Statistics for garage</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NumberOfVehicles)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumberOfVehicles)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.mostPopularBrand)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.mostPopularBrand)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalNumberOfWheels)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalNumberOfWheels)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalCost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalCost) kr
+        </dd>
+
+    </dl>
+</div>
+<p>
+   
+    @Html.ActionLink("Overview", "Index")
+</p>

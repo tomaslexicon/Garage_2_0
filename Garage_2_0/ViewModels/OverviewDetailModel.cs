@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Garage_2_0.ViewModels
 {
-    public class OverviewVehicle
+    public class OverviewDetailVehicle
     {
         [Display(Name = "Type")]
         public string Type { get; set; }
@@ -21,16 +21,34 @@ namespace Garage_2_0.ViewModels
         [Display(Name = "Brand")]
         public string Brand { get; set; }
 
+        [Display(Name = "Color")]
+        public string Color { get; set; }
+
+        [Display(Name = "Number Of Wheels")]
+        public int NumberOfWheels { get; set; }
+
         [Display(Name = "Start time")]
         public DateTime StartTime { get; set; }
+
+        [Display(Name = "Last name")]
+        public string LastName { get; set; }
+
+        [Display(Name = "First name")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Membership Id")]
+        public int MembershipId { get; set; }
+
         public int Id { get; set; }
     }
 
-    public class OverviewModel
+
+    public class OverviewDetailModel
     {
-        public List<OverviewVehicle> Vehicles { get; set; }
+        public List<OverviewDetailVehicle> Vehicles { get; set; }
         public bool IsDescending { get; set; }
         public string SortBy { get; set; }
         public string Search { get; set; }
+
     }
 }
