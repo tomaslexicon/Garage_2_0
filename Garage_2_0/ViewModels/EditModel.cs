@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Garage_2_0.ViewModels
 {
@@ -11,8 +12,17 @@ namespace Garage_2_0.ViewModels
     {
         public int Id { get; set; }
 
+        [Display(Name = "Types")]
+        public IEnumerable<SelectListItem> VehicleTypes { get; set; }
+
         [Display(Name = "Type")]
-        public VehicleType Type { get; set; }
+        public int Type { get; set; }
+
+        [Display(Name = "Member")]
+        public IEnumerable<SelectListItem> Members { get; set; }
+
+        [Display(Name = "Member Id")]
+        public int MemberId { get; set; }
 
         [Required]
         [Display(Name = "Registration number")]

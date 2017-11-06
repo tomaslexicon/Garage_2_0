@@ -112,7 +112,7 @@ namespace Garage_2_0.Controllers
         {
             if (!ModelState.IsValid)
             {
-                checkInVehicle.Members = BuildMemberList(checkInVehicle.Id);
+                checkInVehicle.Members = BuildMemberList(checkInVehicle.MemberId);
                 checkInVehicle.VehicleTypes = BuildVehicleTypeList(checkInVehicle.Type);
 
                 return View(checkInVehicle);
@@ -121,7 +121,7 @@ namespace Garage_2_0.Controllers
             var v = db.ParkedVehicles.Where(p => p.RegNo == checkInVehicle.RegNo).ToList();
             if (v.Count != 0)
             {
-                checkInVehicle.Members = BuildMemberList(checkInVehicle.Id);
+                checkInVehicle.Members = BuildMemberList(checkInVehicle.MemberId);
                 checkInVehicle.VehicleTypes = BuildVehicleTypeList(checkInVehicle.Type);
 
                 return View(checkInVehicle);
@@ -188,62 +188,29 @@ namespace Garage_2_0.Controllers
                 Color = parkedVehicle.Color,
                 Brand = parkedVehicle.Brand,
                 Model = parkedVehicle.Model,
-               // Type = parkedVehicle.VehicleTypeId,
                 NumberOfWheels = parkedVehicle.NumberOfWheels,
                 StartTime = parkedVehicle.StartTime,
-                OriginalRegNo = parkedVehicle.RegNo
+                OriginalRegNo = parkedVehicle.RegNo,
+                Members = BuildMemberList(parkedVehicle.MemberId),
+                VehicleTypes = BuildVehicleTypeList(parkedVehicle.VehicleTypeId),
+                Type = parkedVehicle.VehicleTypeId,
+                MemberId = parkedVehicle.MemberId
             };
 
             return View(model);
         }
-
-        //[HttpPost, ActionName("Edit")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult EditPost(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-
-        //    var vehicleToUpdate = db.ParkedVehicles.Find(id);
-
-        //    //var vh = db.ParkedVehicles.Where(p => p.RegNo == vehicleToUpdate.RegNo && p.Id != vehicleToUpdate.Id).ToList();
-        //    //if (vh.Count != 0)
-        //    //{
-        //    //    vehicleToUpdate.StartTime = db.ParkedVehicles.AsNoTracking().FirstOrDefault(p => p.Id == vehicleToUpdate.Id).StartTime;
-        //    //    return View(vehicleToUpdate);
-        //    //}
-
-        //    if (TryUpdateModel(vehicleToUpdate, "ParkedVehicle",
-        //       new string[] { "Type,RegNo,Color,Brand,Model,NumberOfWheels" }))
-        //    {
-        //        try
-        //        {
-        //            db.SaveChanges();
-
-        //            TempData["Feedback"] = "Your " + vehicleToUpdate.Type + " with registration number " + vehicleToUpdate.RegNo + " has been successfully changed";
-        //            return RedirectToAction("Index");
-        //        }
-        //        catch (DataException /* dex */)
-        //        {
-        //            //Log the error (uncomment dex variable name and add a line here to write a log.
-        //            ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-        //        }
-        //    }
-
-        //    return View(vehicleToUpdate);
-        //}
 
         // POST: ParkedVehicles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Type,RegNo,Color,Brand,Model,NumberOfWheels")] EditModel parkedVehicle)
+        public ActionResult Edit([Bind(Include = "Id,MemberId,Type,RegNo,Color,Brand,Model,NumberOfWheels")] EditModel parkedVehicle)
         {
             if (!ModelState.IsValid)
             {
+                parkedVehicle.Members = BuildMemberList(parkedVehicle.MemberId);
+                parkedVehicle.VehicleTypes = BuildVehicleTypeList(parkedVehicle.Type);
                 return View(parkedVehicle);
             }
 
@@ -251,6 +218,8 @@ namespace Garage_2_0.Controllers
             if (vh.Count != 0)
             {
                 parkedVehicle.StartTime = db.ParkedVehicles.AsNoTracking().FirstOrDefault(p => p.Id == parkedVehicle.Id).StartTime;
+                parkedVehicle.Members = BuildMemberList(parkedVehicle.MemberId);
+                parkedVehicle.VehicleTypes = BuildVehicleTypeList(parkedVehicle.Type);
                 return View(parkedVehicle);
             }
 
@@ -263,14 +232,15 @@ namespace Garage_2_0.Controllers
                 Color = parkedVehicle.Color,
                 Brand = parkedVehicle.Brand,
                 Model = parkedVehicle.Model,
-                //Type = parkedVehicle.Type,
+                VehicleTypeId = parkedVehicle.Type,
+                MemberId = parkedVehicle.MemberId,
                 NumberOfWheels = parkedVehicle.NumberOfWheels,
-                StartTime = startTime
+                StartTime = startTime,
             };
 
             db.Entry(v).State = EntityState.Modified;
             db.SaveChanges();
-            //TempData["Feedback"] = "Your " + v.Type + " with registration number " + v.RegNo + " has been successfully changed";
+            TempData["Feedback"] = "Your " + v.VehicleType + " with registration number " + v.RegNo + " has been successfully changed";
             return RedirectToAction("Index");
         }
 
