@@ -6,14 +6,14 @@ using System.Web;
 
 namespace Garage_2_0.Models
 {
-    public enum VehicleTypeEnum
-    {
-        Car,
-        Motorcycle,
-        Bus,
-        Boat,
-        Airplane
-    }
+    //public enum VehicleTypeEnum
+    //{
+    //    Car,
+    //    Motorcycle,
+    //    Bus,
+    //    Boat,
+    //    Airplane
+    //}
 
     public class ParkedVehicle
     {
