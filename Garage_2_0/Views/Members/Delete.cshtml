@@ -1,12 +1,12 @@
 ﻿@model Garage_2_0.Models.Member
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Unsubscribe";
 }
 
-<h2>Delete</h2>
+@*<h2>Delete</h2>*@
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to unsubscribe?</h3>
 <div>
     <h4>Member</h4>
     <hr />
@@ -42,7 +42,7 @@
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            @Html.ActionLink("Back to member list", "Index")
         </div>
     }
 </div>

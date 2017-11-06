@@ -1,23 +1,13 @@
-﻿@model Garage_2_0.Models.Member
+﻿@*@model Garage_2_0.Models.Member*@
+@model Garage_2_0.ViewModels.MemberDetailsModel
 
-@{
-    ViewBag.Title = "Details";
-}
-
-<h2>Details</h2>
+@*
+    @{ ViewBag.Title = "Details"; }
+*@
 
 <div>
     <h4>Member</h4>
-    <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>
@@ -25,7 +15,13 @@
         <dd>
             @Html.DisplayFor(model => model.FirstName)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
 
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.MembershipId)
         </dt>
@@ -38,5 +34,76 @@
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to member list", "Index")
 </p>
+
+<hr />
+
+
+@*<div>
+    <h4>My parked vehicles</h4>
+    <dl class="dl-horizontal">
+        @foreach (var item in Model.MemberParkedVehicles)
+        {
+            <dt>
+                @Html.DisplayNameFor(modelItem => item.RegNo)
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => item.RegNo)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(modelItem => item.Brand)
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => item.Brand)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(modelItem => item.Model)
+            </dt>
+            <dd>
+                @Html.DisplayFor(modelItem => item.Model)
+            </dd>
+
+        }
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Checkout", "Checkout", new { id = Model.Id }) |
+    @Html.ActionLink("Back to member list", "Index")
+</p>*@
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.MemberParkedVehicles.First().RegNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MemberParkedVehicles.First().Brand)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MemberParkedVehicles.First().Model)
+        </th>
+    </tr>
+
+    @foreach (var item in Model.MemberParkedVehicles)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Brand)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Model)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Check out", "CheckOut", new { id = item.Id })
+            </td>
+        </tr>
+    }
+</table>

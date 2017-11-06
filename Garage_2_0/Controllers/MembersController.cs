@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Garage_2_0.DataAccessLayer;
 using Garage_2_0.Models;
+using Garage_2_0.ViewModels;
 
 namespace Garage_2_0.Controllers
 {
@@ -15,11 +16,47 @@ namespace Garage_2_0.Controllers
     {
         private GarageContext db = new GarageContext();
 
-        // GET: Members
-        public ActionResult Index()
+        //// GET: Members
+        //public ActionResult Index()
+        //{
+        //    return View(db.Members.ToList());
+        //}
+
+        // GET: 
+        public ActionResult Index(string sortBy = "LastName", string isDescending = "True", string search = "")
         {
-            return View(db.Members.ToList());
+            bool descending = isDescending.ToLower() == "true";
+            var model = new MemberViewModel();
+            model.IsDescending = descending;
+            model.SortBy = sortBy;
+            model.Search = search;
+            model.Members = GetViewMemberList(sortBy, descending, search);
+
+            return View(model);
         }
+
+        private List<MemberView> GetViewMemberList(string sortBy, bool isDescending, string search)
+        {
+            bool searchIsEmpty = string.IsNullOrEmpty(search);
+            var v = db.Members.Where(m => searchIsEmpty ? true : m.LastName.ToLower().Contains(search.ToLower())).Select(m => new MemberView
+            {
+                Id = m.Id,
+                FirstName = m.FirstName,
+                LastName = m.LastName,
+                MembershipId = m.MembershipId
+            });
+
+            switch (sortBy.ToLower())
+            {
+                case "firstname":
+                    return isDescending ? v.OrderByDescending(i => i.FirstName).ToList() : v.OrderBy(i => i.FirstName).ToList();
+                case "membershipid":
+                    return isDescending ? v.OrderByDescending(i => i.MembershipId).ToList() : v.OrderBy(i => i.MembershipId).ToList();
+                default:
+                    return isDescending ? v.OrderByDescending(i => i.LastName).ToList() : v.OrderBy(i => i.LastName).ToList();
+            }
+        }
+
 
         // GET: Members/Details/5
         public ActionResult Details(int? id)
@@ -33,7 +70,23 @@ namespace Garage_2_0.Controllers
             {
                 return HttpNotFound();
             }
-            return View(member);
+
+            // try class = Member, VehicleList
+            var model = new MemberDetailsModel();
+            model.Id = member.Id;
+            model.FirstName = member.FirstName;
+            model.LastName = member.LastName;
+            model.MembershipId = member.MembershipId;
+            model.MemberParkedVehicles = db.ParkedVehicles.Where(i => i.MemberId == id).Select(v => new MemberVehicle
+            {
+                Id = v.Id,
+                RegNo = v.RegNo,
+                Brand = v.Brand,
+                Model = v.Model
+            }).ToList();
+
+            // return View(member);
+            return View(model);
         }
 
         // GET: Members/Create

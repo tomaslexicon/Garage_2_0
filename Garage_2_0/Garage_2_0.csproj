@@ -150,6 +150,10 @@
     <Compile Include="Migrations\201711021238068_Initial3.Designer.cs">
       <DependentUpon>201711021238068_Initial3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711021320367_Initial4.cs" />
+    <Compile Include="Migrations\201711021320367_Initial4.Designer.cs">
+      <DependentUpon>201711021320367_Initial4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\ParkedVehicle.cs" />
@@ -159,6 +163,7 @@
     <Compile Include="ViewModels\DetailModel.cs" />
     <Compile Include="ViewModels\CheckOutModel.cs" />
     <Compile Include="ViewModels\EditModel.cs" />
+    <Compile Include="ViewModels\MemberModel.cs" />
     <Compile Include="ViewModels\OverviewModel.cs" />
     <Compile Include="ViewModels\ReceiptModel.cs" />
   </ItemGroup>
@@ -238,6 +243,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711021238068_Initial3.resx">
       <DependentUpon>201711021238068_Initial3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711021320367_Initial4.resx">
+      <DependentUpon>201711021320367_Initial4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

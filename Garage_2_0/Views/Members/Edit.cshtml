@@ -1,10 +1,10 @@
 ﻿@model Garage_2_0.Models.Member
 
-@{
+@*@{
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
+<h2>@ViewBag.Title</h2>*@
 
 
 @using (Html.BeginForm())
@@ -50,7 +50,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to member list", "Index")
 </div>
 
 @section Scripts {
