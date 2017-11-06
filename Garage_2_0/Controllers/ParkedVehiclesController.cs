@@ -33,19 +33,22 @@ namespace Garage_2_0.Controllers
         private List<OverviewVehicle> GetOverviewVehicleList(string sortBy, bool isDescending, string search)
         {
             bool searchIsEmpty = string.IsNullOrEmpty(search);
-            var v = db.ParkedVehicles.Where(p => searchIsEmpty ? true : p.RegNo.ToLower().Contains(search.ToLower())).Select(p => new OverviewVehicle
+            var v = db.ParkedVehicles.Include(e => e.Member).Include(e => e.VehicleType).Where(p => searchIsEmpty ? true : p.RegNo.ToLower().Contains(search.ToLower())).Select(p => new OverviewVehicle
             {
                 Id = p.Id,
                 RegNo = p.RegNo,
+                Type = p.VehicleType.Type,
                 Brand = p.Brand,
-                StartTime = p.StartTime
-                //Type = p.Type
+                StartTime = p.StartTime,
+                OwnerName = p.Member.LastName + ", " + p.Member.FirstName
             });
 
             switch (sortBy.ToLower())
             {
                 case "type":
                     return isDescending ? v.OrderByDescending(i => i.Type.ToString()).ToList() : v.OrderBy(i => i.Type.ToString()).ToList();
+                case "ownername":
+                    return isDescending ? v.OrderByDescending(i => i.OwnerName).ToList() : v.OrderBy(i => i.OwnerName).ToList();
                 case "starttime":
                     return isDescending ? v.OrderByDescending(i => i.StartTime).ToList() : v.OrderBy(i => i.StartTime).ToList();
                 case "brand":
@@ -62,7 +65,7 @@ namespace Garage_2_0.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ParkedVehicle parkedVehicle = db.ParkedVehicles.Find(id);
+            ParkedVehicle parkedVehicle = db.ParkedVehicles.Include(p => p.VehicleType).Where(p => p.Id == id).First();
             if (parkedVehicle == null)
             {
                 return HttpNotFound();
@@ -71,7 +74,7 @@ namespace Garage_2_0.Controllers
             var model = new DetailModel();
 
             model.Id = parkedVehicle.Id;
-            //model.Type = parkedVehicle.Type;
+            model.Type = parkedVehicle.VehicleType.Type;
             model.RegNo = parkedVehicle.RegNo;
             model.Color = parkedVehicle.Color;
             model.Brand = parkedVehicle.Brand;
@@ -86,7 +89,22 @@ namespace Garage_2_0.Controllers
         // GET: ParkedVehicles/CheckIn
         public ActionResult CheckIn()
         {
-            return View();
+            var types = db.VehicleTypes.ToList().Select(vt => new SelectListItem
+            {
+                Value = vt.Id.ToString(),
+                Text = vt.Type
+            });
+
+
+            CheckInModel model = new CheckInModel
+            {
+                RegNo = "",
+                VehicleTypes = types,
+                Brand = "",
+                OwnerName = ""// p.Member.LastName + ", " + p.Member.FirstName
+            };
+
+            return View(model);
         }
 
         // POST: ParkedVehicles/CheckIn
@@ -107,11 +125,13 @@ namespace Garage_2_0.Controllers
                 return View(checkInVehicle);
             }
 
+            
+
             var parkedVehicle = new ParkedVehicle()
             {
                 Id = checkInVehicle.Id,
                 RegNo = checkInVehicle.RegNo,
-                //Type = checkInVehicle.Type,
+                VehicleTypeId = checkInVehicle.Type,
                 Color = checkInVehicle.Color,
                 Brand = checkInVehicle.Brand,
                 Model = checkInVehicle.Model,

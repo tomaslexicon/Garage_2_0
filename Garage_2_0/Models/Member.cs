@@ -13,6 +13,8 @@ namespace Garage_2_0.Models
         public string FirstName { get; set; }
         public int MembershipId { get; set; }
 
+        public string FullName => (FirstName + " " + LastName).Trim();
+
         // navigational properties
         public virtual ICollection<ParkedVehicle> ParkedVehicles { get; set; }
     }

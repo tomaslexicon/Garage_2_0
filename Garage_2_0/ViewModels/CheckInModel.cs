@@ -4,20 +4,33 @@ using System.Linq;
 using System.Web;
 using Garage_2_0.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace Garage_2_0.ViewModels
-{
+{ 
     public class CheckInModel
     {
         public int Id { get; set; }
 
+        [Display(Name = "Types")]
+        public IEnumerable<SelectListItem> VehicleTypes { get; set; }
+      
         [Display(Name = "Type")]
-        public VehicleTypeEnum Type { get; set; }
+        public int Type { get; set; }
 
         [Required]
         [Display(Name = "Registration number")]
         [StringLength(1024, ErrorMessage = "{0} needs to be at least {2} characters long", MinimumLength = 1)]
         public string RegNo { get; set; }
+
+        [Required]
+        [Display(Name = "Owner name")]
+        [StringLength(1024, ErrorMessage = "{0} needs to be at least {2} characters long", MinimumLength = 1)]
+        public string OwnerName { get; set; }
+
+        [Display(Name = "Member number")]
+        [Range(0, int.MaxValue, ErrorMessage = "{0} needs to be larger or equal to {2}")]
+        public int MemberNumber { get; set; }
 
         [Required]
         [Display(Name = "Color")]
