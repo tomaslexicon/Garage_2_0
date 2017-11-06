@@ -87,21 +87,17 @@ namespace Garage_2_0.Controllers
         }
 
         // GET: ParkedVehicles/CheckIn
-        public ActionResult CheckIn()
+        public ActionResult CheckIn(int? id)
         {
-            var types = db.VehicleTypes.ToList().Select(vt => new SelectListItem
-            {
-                Value = vt.Id.ToString(),
-                Text = vt.Type
-            });
-
+            var types = BuildVehicleTypeList();
+            var members = BuildMemberList(id);
 
             CheckInModel model = new CheckInModel
             {
                 RegNo = "",
                 VehicleTypes = types,
+                Members = members,
                 Brand = "",
-                OwnerName = ""// p.Member.LastName + ", " + p.Member.FirstName
             };
 
             return View(model);
@@ -112,20 +108,24 @@ namespace Garage_2_0.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CheckIn([Bind(Include = "Id,Type,RegNo,Color,Brand,Model,NumberOfWheels")] CheckInModel checkInVehicle)
+        public ActionResult CheckIn([Bind(Include = "Id,MemberId,Type,RegNo,Color,Brand,Model,NumberOfWheels")] CheckInModel checkInVehicle)
         {
             if (!ModelState.IsValid)
             {
+                checkInVehicle.Members = BuildMemberList(checkInVehicle.Id);
+                checkInVehicle.VehicleTypes = BuildVehicleTypeList(checkInVehicle.Type);
+
                 return View(checkInVehicle);
             }
 
             var v = db.ParkedVehicles.Where(p => p.RegNo == checkInVehicle.RegNo).ToList();
             if (v.Count != 0)
             {
+                checkInVehicle.Members = BuildMemberList(checkInVehicle.Id);
+                checkInVehicle.VehicleTypes = BuildVehicleTypeList(checkInVehicle.Type);
+
                 return View(checkInVehicle);
             }
-
-            
 
             var parkedVehicle = new ParkedVehicle()
             {
@@ -136,7 +136,8 @@ namespace Garage_2_0.Controllers
                 Brand = checkInVehicle.Brand,
                 Model = checkInVehicle.Model,
                 NumberOfWheels = checkInVehicle.NumberOfWheels,
-                StartTime = DateTime.Now
+                StartTime = DateTime.Now,
+                MemberId = checkInVehicle.MemberId        
             };
 
             db.ParkedVehicles.Add(parkedVehicle);
@@ -144,6 +145,26 @@ namespace Garage_2_0.Controllers
 
             TempData["Feedback"] = "Your " + checkInVehicle.Type + " with registration number " + checkInVehicle.RegNo + " has been checked in";
             return RedirectToAction("Index");
+        }
+
+        private IEnumerable<SelectListItem> BuildMemberList(int? id)
+        {
+            return db.Members.OrderBy(p => p.LastName).ToList().Select(m => new SelectListItem
+            {
+                Value = m.Id.ToString(),
+                Text = m.LastName + ", " + m.FirstName,
+                Selected = id == null ? false : m.Id == id      
+            });
+        }
+
+        private IEnumerable<SelectListItem> BuildVehicleTypeList(int? typeId = null)
+        {
+            return db.VehicleTypes.OrderBy(p => p.Type).ToList().Select(vt => new SelectListItem
+            {
+                Value = vt.Id.ToString(),
+                Text = vt.Type,
+                Selected = typeId == null ? false : vt.Id == typeId
+            });
         }
 
         // GET: ParkedVehicles/Edit/5
@@ -167,7 +188,7 @@ namespace Garage_2_0.Controllers
                 Color = parkedVehicle.Color,
                 Brand = parkedVehicle.Brand,
                 Model = parkedVehicle.Model,
-                //Type = parkedVehicle.Type,
+               // Type = parkedVehicle.VehicleTypeId,
                 NumberOfWheels = parkedVehicle.NumberOfWheels,
                 StartTime = parkedVehicle.StartTime,
                 OriginalRegNo = parkedVehicle.RegNo

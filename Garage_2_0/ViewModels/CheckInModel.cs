@@ -10,11 +10,18 @@ namespace Garage_2_0.ViewModels
 { 
     public class CheckInModel
     {
+        [Display(Name = "Id")]
         public int Id { get; set; }
+
+        [Display(Name = "Member")]
+        public IEnumerable<SelectListItem> Members { get; set; }
+
+        [Display(Name = "Member Id")]
+        public int MemberId { get; set; }   
 
         [Display(Name = "Types")]
         public IEnumerable<SelectListItem> VehicleTypes { get; set; }
-      
+
         [Display(Name = "Type")]
         public int Type { get; set; }
 
@@ -22,11 +29,6 @@ namespace Garage_2_0.ViewModels
         [Display(Name = "Registration number")]
         [StringLength(1024, ErrorMessage = "{0} needs to be at least {2} characters long", MinimumLength = 1)]
         public string RegNo { get; set; }
-
-        [Required]
-        [Display(Name = "Owner name")]
-        [StringLength(1024, ErrorMessage = "{0} needs to be at least {2} characters long", MinimumLength = 1)]
-        public string OwnerName { get; set; }
 
         [Display(Name = "Member number")]
         [Range(0, int.MaxValue, ErrorMessage = "{0} needs to be larger or equal to {2}")]
