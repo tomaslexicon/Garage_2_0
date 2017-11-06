@@ -33,46 +33,11 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to member list", "Index")
+    @Html.ActionLink("Edit", "Edit", "Member", new { id = Model.Id }) |
+    @Html.ActionLink("Back to member list", "Index", "Member")
 </p>
 
 <hr />
-
-
-@*<div>
-    <h4>My parked vehicles</h4>
-    <dl class="dl-horizontal">
-        @foreach (var item in Model.MemberParkedVehicles)
-        {
-            <dt>
-                @Html.DisplayNameFor(modelItem => item.RegNo)
-            </dt>
-            <dd>
-                @Html.DisplayFor(modelItem => item.RegNo)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(modelItem => item.Brand)
-            </dt>
-            <dd>
-                @Html.DisplayFor(modelItem => item.Brand)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(modelItem => item.Model)
-            </dt>
-            <dd>
-                @Html.DisplayFor(modelItem => item.Model)
-            </dd>
-
-        }
-    </dl>
-</div>
-
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Checkout", "Checkout", new { id = Model.Id }) |
-    @Html.ActionLink("Back to member list", "Index")
-</p>*@
 
 <table class="table">
     <tr>
@@ -100,9 +65,9 @@
                 @Html.DisplayFor(modelItem => item.Model)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Check out", "CheckOut", new { id = item.Id })
+                @Html.ActionLink("Edit", "Edit", "ParkedVehicles", new { id = item.Id }, null) |
+                @Html.ActionLink("Details", "Details", "ParkedVehicles", new { id = item.Id }, null) |
+                @Html.ActionLink("Check out", "CheckOut", "ParkedVehicles", new { id = item.Id }, null)
             </td>
         </tr>
     }

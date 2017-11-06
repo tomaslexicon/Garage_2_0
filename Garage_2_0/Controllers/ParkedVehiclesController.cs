@@ -351,18 +351,13 @@ namespace Garage_2_0.Controllers
         public ActionResult CheckOut(int? id)
         {
             var ParkedVehicle = db.ParkedVehicles.Find(id);
-            var ParkStopTime = DateTime.Now;  // move to Confirmed
-            //var ParkingMinutes = ParkStopTime.Subtract(ParkedVehicle.StartTime).TotalMinutes;
-            //const double COST_PER_MINUTE = 0.20;
-
-            // var temp = formatTimeSpan(ParkStopTime.Subtract(ParkedVehicle.StartTime).ToString(@"dd\:hh\:mm"));
+            var ParkStopTime = DateTime.Now;
 
             var CheckOutVehicle = new CheckOutModel()
             {
                 Id = ParkedVehicle.Id,
                 RegNo = ParkedVehicle.RegNo,
                 StartTime = ParkedVehicle.StartTime.ToString("g"),
-               
             };
 
             return View(CheckOutVehicle);

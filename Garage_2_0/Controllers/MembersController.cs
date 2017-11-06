@@ -95,6 +95,12 @@ namespace Garage_2_0.Controllers
             return View();
         }
 
+        // GET: Members/Create
+        public ActionResult TakeCareofYourVehicle()
+        {
+            return Content("TakeCareofYourVehicle") ;
+        }
+
         // POST: Members/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -155,6 +161,13 @@ namespace Garage_2_0.Controllers
             {
                 return HttpNotFound();
             }
+
+            // Check if member has a parked vehicle
+            if (db.ParkedVehicles.Find(id) != null)
+            {
+                return RedirectToAction("TakeCareofYourVehicle");
+            }
+
             return View(member);
         }
 
