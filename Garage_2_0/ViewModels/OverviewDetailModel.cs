@@ -24,7 +24,7 @@ namespace Garage_2_0.ViewModels
         [Display(Name = "Color")]
         public string Color { get; set; }
 
-        [Display(Name = "Number Of Wheels")]
+        [Display(Name = "Number of wheels")]
         public int NumberOfWheels { get; set; }
 
         [Display(Name = "Start time")]
@@ -36,7 +36,7 @@ namespace Garage_2_0.ViewModels
         [Display(Name = "First name")]
         public string FirstName { get; set; }
 
-        [Display(Name = "Membership Id")]
+        [Display(Name = "Member number")]
         public int MembershipId { get; set; }
 
         public int Id { get; set; }

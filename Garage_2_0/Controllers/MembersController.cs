@@ -100,12 +100,18 @@ namespace Garage_2_0.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,LastName,FirstName,MembershipId")] Member member)
+        public ActionResult Create([Bind(Include = "Id,LastName,FirstName")] Member member)
         {
             if (ModelState.IsValid)
             {
+                
+
                 db.Members.Add(member);
                 db.SaveChanges();
+                member.MembershipId = 100000 + member.Id;
+                db.Entry(member).State = EntityState.Modified;
+                db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
 
