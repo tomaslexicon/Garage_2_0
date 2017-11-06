@@ -58,6 +58,64 @@ namespace Garage_2_0.Controllers
             }
         }
 
+        // GET: ParkedVehicles
+        public ActionResult OverviewDetails(string sortBy = "RegNo", string isDescending = "True", string search = "")
+        {
+            bool desc = isDescending.ToLower() == "true";
+            var model = new OverviewDetailModel();
+            model.IsDescending = desc;
+            model.SortBy = sortBy;
+            model.Search = search;
+            model.Vehicles = GetOverviewDetailVehicleList(sortBy, desc, search);
+
+            return View(model);
+        }
+
+        private List<OverviewDetailVehicle> GetOverviewDetailVehicleList(string sortBy, bool isDescending, string search)
+        {
+            bool searchIsEmpty = string.IsNullOrEmpty(search);
+            var v = db.ParkedVehicles.Include(e => e.Member).Include(e => e.VehicleType).Where(p => searchIsEmpty ? true : p.RegNo.ToLower().Contains(search.ToLower())).Select(p => new OverviewDetailVehicle
+            {
+                Id = p.Id,
+                RegNo = p.RegNo,
+                Type = p.VehicleType.Type,
+                Brand = p.Brand,
+                Color = p.Color,
+                NumberOfWheels = p.NumberOfWheels,
+                StartTime = p.StartTime,
+                FirstName = p.Member.FirstName,
+                LastName = p.Member.LastName,
+                MembershipId = p.Member.MembershipId
+                //OwnerName = p.Member.LastName + ", " + p.Member.FirstName
+            });
+
+            switch (sortBy.ToLower())
+            {
+                case "type":
+                    return isDescending ? v.OrderByDescending(i => i.Type.ToString()).ToList() : v.OrderBy(i => i.Type.ToString()).ToList();
+                case "ownername":
+                    return isDescending ? v.OrderByDescending(i => i.LastName).ToList() : v.OrderBy(i => i.LastName).ToList();
+                case "starttime":
+                    return isDescending ? v.OrderByDescending(i => i.StartTime).ToList() : v.OrderBy(i => i.StartTime).ToList();
+                case "brand":
+                    return isDescending ? v.OrderByDescending(i => i.Brand).ToList() : v.OrderBy(i => i.Brand).ToList();
+                case "color":
+                    return isDescending ? v.OrderByDescending(i => i.Color).ToList() : v.OrderBy(i => i.Color).ToList();
+                case "numberofwheels":
+                    return isDescending ? v.OrderByDescending(i => i.NumberOfWheels).ToList() : v.OrderBy(i => i.NumberOfWheels).ToList();
+                case "membershipid":
+                    return isDescending ? v.OrderByDescending(i => i.MembershipId ).ToList() : v.OrderBy(i => i.MembershipId).ToList();
+                default:
+                    return isDescending ? v.OrderByDescending(i => i.RegNo).ToList() : v.OrderBy(i => i.RegNo).ToList();
+            }
+        }
+
+
+
+
+
+
+
         // GET: ParkedVehicles/Details/5
         public ActionResult Details(int? id)
         {
