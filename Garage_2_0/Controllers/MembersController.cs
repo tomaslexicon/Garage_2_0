@@ -163,9 +163,9 @@ namespace Garage_2_0.Controllers
             }
 
             // Check if member has a parked vehicle
-            if (db.ParkedVehicles.Find(id) != null)
+            if (db.ParkedVehicles.Where(i => i.MemberId == id).ToList().Count >= 1)
             {
-                return RedirectToAction("\n\t\t--   UNDER CONSTRUCTION  --\n\t\t-- TakeCareofYourVehicle --");
+                return Content("UNDER CONSTRUCTION  --- TakeCareofYourParkedVehicle");
             }
 
             return View(member);
