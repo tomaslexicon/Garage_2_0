@@ -16,7 +16,7 @@ namespace Garage_2_0.Models
         [Display(Name = "First name")]
         public string FirstName { get; set; }
 
-        [Display(Name = "Member nr")]
+        [Display(Name = "Member number")]
         public int MembershipId { get; set; }
 
         public string FullName => (FirstName + " " + LastName).Trim();

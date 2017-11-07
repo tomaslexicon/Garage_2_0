@@ -44,7 +44,7 @@
 }
 
 <p>
-    @Html.ActionLink("Detail view", "OverviewDetails")
+    @Html.ActionLink("Detail view", "OverviewDetails", new { sortBy = Model.SortBy, isDescending = Model.IsDescending, search = Model.Search })
 </p>
 
 <table class="table">

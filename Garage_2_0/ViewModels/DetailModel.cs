@@ -28,7 +28,10 @@ namespace Garage_2_0.ViewModels
         public string StartTime { get; set; }
         [Display(Name = "Parking time")]
         public string ParkingTime { get; set; }
-
+        [Display(Name = "First name")]
+        public string FirstName { get; set; }
+        [Display(Name = "Last name")]
+        public string LastName { get; set; }
 
     }
 }

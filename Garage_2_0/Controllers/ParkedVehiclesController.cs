@@ -86,7 +86,6 @@ namespace Garage_2_0.Controllers
                 FirstName = p.Member.FirstName,
                 LastName = p.Member.LastName,
                 MembershipId = p.Member.MembershipId
-                //OwnerName = p.Member.LastName + ", " + p.Member.FirstName
             });
 
             switch (sortBy.ToLower())
@@ -111,11 +110,6 @@ namespace Garage_2_0.Controllers
         }
 
 
-
-
-
-
-
         // GET: ParkedVehicles/Details/5
         public ActionResult Details(int? id)
         {
@@ -123,7 +117,7 @@ namespace Garage_2_0.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ParkedVehicle parkedVehicle = db.ParkedVehicles.Include(p => p.VehicleType).Where(p => p.Id == id).First();
+            ParkedVehicle parkedVehicle = db.ParkedVehicles.Include(p => p.Member).Include(p => p.VehicleType).Where(p => p.Id == id).First();
             if (parkedVehicle == null)
             {
                 return HttpNotFound();
@@ -140,7 +134,8 @@ namespace Garage_2_0.Controllers
             model.NumberOfWheels = parkedVehicle.NumberOfWheels;
             model.StartTime = parkedVehicle.StartTime.ToString("g");
             model.ParkingTime = formatTimeSpan(DateTime.Now.Subtract(parkedVehicle.StartTime).ToString(@"dd\:hh\:mm"));
-
+            model.FirstName = parkedVehicle.Member.FirstName;
+            model.LastName = parkedVehicle.Member.LastName;
             return View(model);
         }
 
