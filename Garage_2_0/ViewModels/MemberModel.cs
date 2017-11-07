@@ -18,7 +18,7 @@ namespace Garage_2_0.ViewModels
         [Display(Name = "Last name")]
         public string LastName { get; set; }
 
-        [Display(Name = "Member nr")]
+        [Display(Name = "Member number")]
         public int MembershipId { get; set; }
     }
 
@@ -56,7 +56,7 @@ namespace Garage_2_0.ViewModels
         [Display(Name = "Last name")]
         public string LastName { get; set; }
 
-        [Display(Name = "Member nr")]
+        [Display(Name = "Member number")]
         public int MembershipId { get; set; }
 
         public List<MemberVehicle> MemberParkedVehicles { get; set; }
